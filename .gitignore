@@ -1,0 +1,14 @@
+# Python generated 
+__pycache__/
+.ipynb_checkpoints
+
+
+# MacOS generated
+.DS_Store
+
+# PyTorch & NumPy  data files
+*.pt
+*.npz
+
+# VS Code generated
+.vscode/
