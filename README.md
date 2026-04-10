@@ -9,5 +9,5 @@ La instalación de transformers la hago con PIP ya que la versión que instala c
 
 No hacer $ conda update --all -c conda-forge -y porque instala una versión de PyTorch sin CUDA \
 
-Para comprobar las versiones de librerías y que está funcionando CUDA en PyTorch ejecutar 'version.py' \
-Para monitorizar el uso de la GPU usar './monitor.sh' en una ventana de Terminal
+Para comprobar las versiones de librerías y que está funcionando CUDA en PyTorch ejecutar `version.py` \
+Para monitorizar el uso de la GPU usar `./monitor.sh` en una ventana de Terminal
