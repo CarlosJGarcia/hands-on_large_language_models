@@ -3,6 +3,7 @@ conda create --name hands-on_llm_cuda --clone llm_scratch_cuda
 conda activate hands-on_llm_cuda \
 conda install -c conda-forge sentencepiece
 conda install -c conda-forge protobuf
+conda install -c conda-forge gensim
 pip install transformers accelerate huggingface_hub tokenizers 
 
 
