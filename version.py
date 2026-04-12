@@ -17,4 +17,5 @@ if torch.cuda.is_available():
 print(f"Tiktoken       : {version('tiktoken')}")
 print(f"Transformers   : {transformers.__version__}")
 print(f"Tokenizers     : {tokenizers.__version__}")
+print(f"Bitsandbytes   : {version('bitsandbytes')}")
 print()
