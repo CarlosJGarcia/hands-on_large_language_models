@@ -5,7 +5,9 @@ conda install -c conda-forge sentencepiece \
 conda install -c conda-forge protobuf \
 conda install -c conda-forge gensim \
 pip install transformers accelerate huggingface_hub tokenizers \
-pip install --upgrade bitsandbytes
+pip install --upgrade bitsandbytes \
+pip install datasets \
+pip install zstandard lz4
 
 
 **Importante:** \
