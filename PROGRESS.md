@@ -16,3 +16,28 @@
 - Edge model: Los modelos compactos pensados para ejecutarse localmente en un smartphone o en un ordenador, incluso con hardware dedicado (RTX 3060 12 GB, RTX 5060 16 GB, etc)
 
 - Representation model: Normalmente son modelos no-generativos. Entienden el sentido de un texto y lo pueden clasificar (análisis de sentimientos, búsquedas en el documento, es spam o no-spam)
+
+
+### Librerías
+
+- Data Science:
+    - scipy, pandas
+
+- Deep Learning:
+    - keras, tensorflow
+    - pytorch
+
+- Large Language Models:
+    - Core
+        - Transformers: Modelos
+        - Accelerate  : Bridge  CPU -> GPU
+        - bitsandbytes: Quantization
+    - Datasets
+        - datasets       : datasets
+        - zstandard y lz4: unzipper
+    - Tokenización
+        - tokenizer
+        - tiktoker
+        - sentencepiece y protobuf: usados por Google y Llama
+    - Varios
+        - gensim: Tareas 'clasicas' de NLP (Natural Language Processing) tipo Word2Vec
