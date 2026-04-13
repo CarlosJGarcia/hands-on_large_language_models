@@ -21,23 +21,35 @@
 ### Librerías
 
 - Data Science:
-    - scipy, pandas
+    - numpy, scipy, pandas
+
+- Visualization:
+    - matplotlib: estático
+    - plotly    : interactivo
+
+- Traditional Machine Learning:
+    - sci-kit-learn: random forests, no GPU
 
 - Deep Learning:
-    - keras, tensorflow
-    - pytorch
+    - keras, tensorflow: Google
+    - pytorch          : Meta (Facebook)
 
 - Large Language Models:
     - Core
-        - Transformers: Modelos
-        - Accelerate  : Bridge  CPU -> GPU
-        - bitsandbytes: Quantization
-    - Datasets
-        - datasets       : datasets
-        - zstandard y lz4: unzipper
-    - Tokenización
-        - tokenizer
-        - tiktoker
-        - sentencepiece y protobuf: usados por Google y Llama
-    - Varios
+        - transformers: Modelos de Hugging Face
+        - accelerate  : Bridge  CPU -> GPU de Hugging Face
+        - bitsandbytes: Quantization. La llama transformers cuando al cargar un modelo indicamos el parámetro load_in_4bit=True
+
+    - Datasets:
+        - datasets       : datasets de Hugging Face
+        - zstandard y lz4: unzipper, usado por datasets
+
+    - Tokenización:
+        - tokenizers     : tokenizer de Hugging Face
+        - tiktoker       : tokenizer de OpenAI (ChatGPT)
+        - sentencepiece  : tokenizer de Google
+        - protobuf       : serializador de Google
+
+    - Varios:
         - gensim: Tareas 'clasicas' de NLP (Natural Language Processing) tipo Word2Vec
+
