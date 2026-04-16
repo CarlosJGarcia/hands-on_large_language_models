@@ -8,7 +8,8 @@ conda install -c conda-forge scikit-learn \
 pip install transformers accelerate huggingface_hub tokenizers \
 pip install --upgrade bitsandbytes \
 pip install datasets \
-pip install zstandard lz4
+pip install zstandard lz4 \
+pip install sentence-transformers
 
 
 **Importante:** \
