@@ -4,6 +4,7 @@ conda activate hands-on_llm_cuda \
 conda install -c conda-forge sentencepiece \
 conda install -c conda-forge protobuf \
 conda install -c conda-forge gensim \
+conda install -c conda-forge scikit-learn \
 pip install transformers accelerate huggingface_hub tokenizers \
 pip install --upgrade bitsandbytes \
 pip install datasets \
