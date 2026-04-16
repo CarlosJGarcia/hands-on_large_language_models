@@ -6,6 +6,7 @@ from datasets import load_dataset
 print("Loading Hugging Face - Rotten Tomatoes dataset")
 print("----------------------------------------------")
 data = load_dataset("rotten_tomatoes")
+print(type(data))
 print(data)
 print()
 
@@ -14,3 +15,8 @@ print("-------------------")
 print(data["train"][0, -1])
 print()
 
+print("Printing the first 5 sentences:")
+print("-------------------------------")
+for n in range(5):
+    sentence = data["train"][n]["text"]
+    print(f"{n+1}. {sentence}")
