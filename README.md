@@ -9,7 +9,8 @@ pip install transformers accelerate huggingface_hub tokenizers \
 pip install --upgrade bitsandbytes \
 pip install datasets \
 pip install zstandard lz4 \
-pip install sentence-transformers
+pip install sentence-transformers \
+pip install openai
 
 
 **Importante:** \
