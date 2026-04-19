@@ -7,7 +7,11 @@
 | 2. Tokenization and embeddings | Completed | 12/Apr/2026 | - |
 | 3. Looking into LLMs | Completed | 13/Apr/2026 | - |
 | *Section 2 - Using Pretrained Language Models* |
-| 4. Text classification | Not started | - | - |
+| 4. Text classification | Completed | 19/Apr/2026 | - |
+| 5. Text clustering and topic modeling | Not started | - | - |
+| 6. Prompt engineering | Not started | - | - |
+| 7. Advanced text generation techñniques and tools | Not started | - | - |
+
 ---
 
 ### Notes
@@ -15,7 +19,9 @@
 
 - Edge model: Los modelos compactos pensados para ejecutarse localmente en un smartphone o en un ordenador, incluso con hardware dedicado (RTX 3060 12 GB, RTX 5060 16 GB, etc)
 
-- Representation model: Normalmente son modelos no-generativos. Entienden el sentido de un texto y lo pueden clasificar (análisis de sentimientos, búsquedas en el documento, es spam o no-spam)
+- Representation model: Son modelos no-generativos. Son modelos 'decodificadores' o clasificadores. Entienden el sentido de un texto y lo pueden clasificar (análisis de sentimientos, búsquedas en el documento, es spam o no-spam)
+
+- Generative model: Modelos diseñados para crear contenido nuevo a partir de una instrucción (prompt). Entienden el sentido de un texto (necesario para 'entender' el prompt y predicen la continuación más probable, para generar respuestas, código, resúmenes o traducciones
 
 
 ### Librerías
