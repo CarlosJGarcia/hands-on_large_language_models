@@ -4,13 +4,21 @@
 import torch
 from tqdm import tqdm
 from datasets import load_dataset
+from sklearn.metrics import classification_report
+from transformers.pipelines.pt_utils import KeyDataset
 from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM
+
 
 # Load our data
 print()
 print("Loading Hugging Face - Rotten Tomatoes dataset")
 print("----------------------------------------------")
 data = load_dataset("rotten_tomatoes")
+
+def add_prefix(example):
+    return {"t5": "sst2 sentence: " + example["text"]}
+data = data.map(add_prefix)
+
 print(data)
 print()
 
@@ -22,27 +30,11 @@ model_name = "google/flan-t5-small"
 
 # Load tokenizer and model
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to("cuda:0")
-pipe = pipeline("text2text-generation", model="google/flan-t5-small", device="cuda:0")
+#model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to("cuda:0")
+#pipe = pipeline("text2text-generation", model="google/flan-t5-small", device="cuda:0")
+pipe = pipeline("text-generation", model=model_name, device="cuda:0", max_new_tokens=5, max_length=None)
 
-# Prepare input
-input_text = "Translate to French: Hello, how are you?"
-inputs = tokenizer(input_text, return_tensors="pt").to("cuda:0")
 
-# Generate
-print("Prueba")
-print("------")
-outputs = model.generate(**inputs, max_new_tokens=50)
-print(tokenizer.decode(outputs[0], skip_special_tokens=True))
-print()
-
-# Prepare our data
-prompt = "Is the following sentence positive or negative? "
-data = data.map(lambda example: {"t5": prompt + example['text']})
-print("Data")
-print("------")
-print(data)
-print()
 
 # Run inference
 y_pred = []
