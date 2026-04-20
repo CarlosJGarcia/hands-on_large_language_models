@@ -3,20 +3,39 @@ from transformers import GenerationConfig, AutoModelForCausalLM, AutoTokenizer, 
 
 model_id = "microsoft/Phi-3-mini-4k-instruct"
 
+# Load Model and Tokenizer
 # 1. Load with native transformers implementation (trust_remote_code=False)
 # 2. Use attn_implementation="eager" to bypass Flash Attention requirements
 model = AutoModelForCausalLM.from_pretrained(model_id, device_map="cuda", torch_dtype="auto", trust_remote_code=False, attn_implementation="eager")
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 
-# Define a clean Generation Config
+# Define a clean Generation Config to avoid warnings being displayed
 gen_cfg = GenerationConfig.from_pretrained(model_id)
 gen_cfg.do_sample = False
-gen_cfg.max_new_tokens = 500
+#gen_cfg.max_length = None
 gen_cfg.temperature = None
-model.generation_config = gen_cfg
+gen_cfg.max_new_tokens = 500
+model.generation_config.max_length = 4096
+#model.generation_config = gen_cfg
 
 # Create the pipeline
 pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, return_full_text=False)
 
 # Test it
-print("\nModel loaded successfully!")
+# print("\nModel loaded successfully!")
+
+# Get user input from the terminal
+user_prompt = input("\nUser prompt: ")
+user_prompt = [{"role": "user", "content": user_prompt}]
+prompt = tokenizer.apply_chat_template(user_prompt, tokenize=False, add_generation_prompt=True)
+print(f"Prompt: {prompt}")
+
+# Run inference
+print("\nPhi-3 thinking...")
+output = pipe(prompt)
+
+# Print result
+print(f"\nGenerated reply: {output[0]['generated_text']}")
+
+# 4. PREVENT EXIT: Wait for user signal
+input("Press ENTER to close the script and clear GPU memory")
