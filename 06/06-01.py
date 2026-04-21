@@ -12,17 +12,15 @@ tokenizer = AutoTokenizer.from_pretrained(model_id)
 # Define a clean Generation Config to avoid warnings being displayed
 gen_cfg = GenerationConfig.from_pretrained(model_id)
 gen_cfg.do_sample = False
-#gen_cfg.max_length = None
 gen_cfg.temperature = None
 gen_cfg.max_new_tokens = 500
 model.generation_config.max_length = 4096
-#model.generation_config = gen_cfg
 
 # Create the pipeline
 pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, return_full_text=False)
 
-# Test it
-# print("\nModel loaded successfully!")
+print("\nModel loaded successfully!")
+
 
 # Get user input from the terminal
 user_prompt = input("\nUser prompt: ")
