@@ -1,19 +1,20 @@
 import torch
 from transformers import GenerationConfig, AutoModelForCausalLM, AutoTokenizer, pipeline
 
-model_id = "microsoft/Phi-3-mini-4k-instruct"
+MODEL_ID = "microsoft/Phi-3-mini-4k-instruct"
+MAX_NEW_TOKENS = 500
 
-# Load Model and Tokenizer
-# 1. Load with native transformers implementation (trust_remote_code=False)
-# 2. Use attn_implementation="eager" to bypass Flash Attention requirements
-model = AutoModelForCausalLM.from_pretrained(model_id, device_map="cuda", torch_dtype="auto", trust_remote_code=False, attn_implementation="eager")
-tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+# Load Model and Tokenizer using transformers library
+# trust_remote_code=False + attn_implementation="eager" para evitar warnings
+model = AutoModelForCausalLM.from_pretrained(MODEL_ID, device_map="cuda", torch_dtype="auto", trust_remote_code=False, attn_implementation="eager")
+tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 
 # Define a clean Generation Config to avoid warnings being displayed
-gen_cfg = GenerationConfig.from_pretrained(model_id)
+gen_cfg = GenerationConfig.from_pretrained(MODEL_ID)
 gen_cfg.do_sample = False
 gen_cfg.temperature = None
-gen_cfg.max_new_tokens = 500
+gen_cfg.max_new_tokens = MAX_NEW_TOKENS
 model.generation_config.max_length = 4096
 
 # Create the pipeline
