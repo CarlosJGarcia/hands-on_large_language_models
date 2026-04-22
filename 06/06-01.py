@@ -20,7 +20,7 @@ model.generation_config.max_length = 4096
 # Create the pipeline
 pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, return_full_text=False)
 
-print("\nModel loaded successfully!")
+print(f"\nModel {MODEL_ID} loaded successfully!")
 
 
 # Get user input from the terminal
@@ -29,11 +29,9 @@ user_prompt = [{"role": "user", "content": user_prompt}]
 prompt = tokenizer.apply_chat_template(user_prompt, tokenize=False, add_generation_prompt=True)
 print(f"Prompt: {prompt}")
 
-# Run inference
-print("\nPhi-3 thinking...")
+# Run inference adnd print result
+print("Phi-3 thinking...")
 output = pipe(prompt)
-
-# Print result
 print(f"\nGenerated reply: {output[0]['generated_text']}")
 
 
@@ -49,8 +47,114 @@ data = f"Text to summarize: {text}"
 
 # The full prompt - remove and add pieces to view its impact on the generated output
 query = persona + instruction + context + data_format + audience + tone + data
-
 print(f"\n{query}")
+
+
+# Use a single example of using the made-up word in a sentence
+one_shot_prompt = [
+    {
+        "role": "user",
+        "content": "A 'Gigamuru' is a type of Japanese musical instrument. An example of a sentence that uses the word Gigamuru is:"
+    },
+    {
+        "role": "assistant",
+        "content": "I have a Gigamuru that my uncle gave me as a gift. I love to play it at home."
+    },
+    {
+        "role": "user",
+        "content": "To 'screeg' something is to swing a sword at it. An example of a sentence that uses the word screeg is:"
+    }
+]
+query = tokenizer.apply_chat_template(one_shot_prompt, tokenize=False)
+print(f"\nPrompt: {query}")
+
+# Generate the output
+print("Phi-3 thinking...")
+output = pipe(one_shot_prompt)
+print(f"\nGenerated reply: {output[0]['generated_text']}")
+
+
+# Create name and slogan for a product
+product_prompt = [{"role": "user", "content": "Create a name and slogan for a chatbot that leverages LLMs."}]
+print("\nPhi-3 thinking...")
+outputs = pipe(product_prompt)
+product_description = outputs[0]["generated_text"]
+print(f"\nGenerated reply: {product_description}")
+
+
+# Based on a name and slogan for a product, generate a sales pitch
+sales_prompt = [
+    {"role": "user", "content": f"Generate a very short sales pitch for the following product: '{product_description}'"}
+]
+print("\nPhi-3 thinking...")
+outputs = pipe(sales_prompt)
+sales_pitch = outputs[0]["generated_text"]
+print(f"\nGenerated reply: {sales_pitch}")
+
+
+# Answering with chain-of-thought
+cot_prompt = [
+    {"role": "user", "content": "Roger has 5 tennis balls. He buys 2 more cans of tennis balls. Each can has 3 tennis balls. How many tennis balls does he have now?"},
+    {"role": "assistant", "content": "Roger started with 5 balls. 2 cans of 3 tennis balls each is 6 tennis balls. 5 + 6 = 11. The answer is 11."},
+    {"role": "user", "content": "The cafeteria had 23 apples. If they used 20 to make lunch and bought 6 more, how many apples do they have?"}
+]
+
+# Generate the output
+print("\nPhi-3 thinking...")
+outputs = pipe(cot_prompt)
+print(f"\nGenerated reply: {outputs[0]['generated_text']}")
+
+
+# Zero-shot chain-of-thought
+zeroshot_cot_prompt = [
+    {"role": "user", "content": "The cafeteria had 23 apples. If they used 20 to make lunch and bought 6 more, how many apples do they have? Let's think step-by-step."}
+]
+
+# Generate the output
+print("\nPhi-3 thinking...")
+outputs = pipe(zeroshot_cot_prompt)
+print(f"\nGenerated reply: {outputs[0]['generated_text']}")
+
+
+# Zero-shot tree-of-thought
+zeroshot_tot_prompt = [
+    {"role": "user", "content": "Imagine three different experts are answering this question. All experts will write down 1 step of their thinking, then share it with the group. Then all experts will go on to the next step, etc. If any expert realizes they're wrong at any point then they leave. The question is 'The cafeteria had 23 apples. If they used 20 to make lunch and bought 6 more, how many apples do they have?' Make sure to discuss the results."}
+]
+# Generate the output
+print("\nPhi-3 thinking...")
+outputs = pipe(zeroshot_tot_prompt)
+print(f"\nGenerated reply: {outputs[0]['generated_text']}")
+
+
+
+# Zero-shot learning: Providing no examples
+zeroshot_prompt = [
+    {"role": "user", "content": "Create a character profile for an RPG game in JSON format."}
+]
+# Generate the output
+print("\nPhi-3 thinking...")
+outputs = pipe(zeroshot_prompt)
+print(f"\nGenerated reply: {outputs[0]['generated_text']}")
+
+
+# One-shot learning: Providing an example of the output structure
+one_shot_template = """Create a short character profile for an RPG game. Make sure to only use this format:
+
+{
+  "description": "A SHORT DESCRIPTION",
+  "name": "THE CHARACTER'S NAME",
+  "armor": "ONE PIECE OF ARMOR",
+  "weapon": "ONE OR MORE WEAPONS"
+}
+"""
+one_shot_prompt = [
+    {"role": "user", "content": one_shot_template}
+]
+
+# Generate the output
+print("\nPhi-3 thinking...")
+outputs = pipe(one_shot_prompt)
+print(f"\nGenerated reply: {outputs[0]['generated_text']}")
 
 
 # 4. PREVENT EXIT: Wait for user signal
