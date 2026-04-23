@@ -12,18 +12,24 @@ pip install zstandard lz4 \
 pip install sentence-transformers \
 pip install openai
 
-**Instalacion de la librería llama-cpp-python con soporte CUDA** \
-Para que la librería use la GPU, es necesario compilar la librearí a partir del código fuente en local, usando con la versión instalada del CUDA toolkit (CUDA Compute Platform) \
-ollama está desarrollado usando la librería llama-cpp \
-llama-cpp se desarrolló para permitir cargar y usar el modelo Llama de Meta en portátiles con CPU o CPU+GPU. Anteriormente Llama solo funcionaba usando PyTorch en servidores \
-Actualmente, tanto llama.cpp como ollama permiten usar cualquier modelo, no solo Llama, sino también Gemma, Mistral \
+**Instalación de llama-cpp-python con soporte CUDA** \
+sudo apt update \
+sudo apt upgrade -y \
+sudo apt install -y build-essential cmake \
+export CMAKE_ARGS="-DGGML_CUDA=on" \
+export FORCE_CMAKE=1 \
+pip install --upgrade --force-reinstall --no-cache-dir llama-cpp-python \
 
-$ sudo apt update \
-$ sudo apt upgrade -y \
-$ sudo apt install -y build-essential cmake \
-$ export CMAKE_ARGS="-DGGML_CUDA=on" \
-$ export FORCE_CMAKE=1 \
-$ pip install --upgrade --force-reinstall --no-cache-dir llama-cpp-python \
+
+**Sobre la instalación de llama-cpp-python con soporte CUDA** \
+Para que la librería use la GPU, es necesario compilarla en local, a partir del código fuente, usando el CUDA toolkit (CUDA Compute Platform) \
+
+**Llama, llama.cpp y ollama** \
+ollama está desarrollado usando la librería llama.cpp \
+llama.cpp se desarrolló para permitir cargar y usar el modelo Llama de Meta en portátiles con CPU o CPU+GPU. Anteriormente Llama solo funcionaba usando PyTorch en servidores \
+llama.cpp es la librería core en C/C++ para cargar y usar LLMs. llama-cpp-python es un wrapper de mas alto nivel en python.
+Por este motivo, se descarga llama-cpp-python con PIP, se compila el código llama.cpp usando el CUDA toolkit y ya se puede usar la libraria python
+Actualmente, tanto llama.cpp como ollama permiten usar cualquier LLM, no solo Llama, sino también Gemma, Mistral, etc. \
 
 
 **Importante:** \
@@ -35,3 +41,9 @@ No hacer $ conda update --all -c conda-forge -y porque instala una versión de P
 
 Para comprobar las versiones de librerías y que está funcionando CUDA en PyTorch ejecutar `version.py` \
 Para monitorizar el uso de la GPU usar `./monitor.sh` en una ventana de Terminal
+
+| GPU Category | Model | Key Advantage for AI |
+| :--- | :--- | :--- |
+| **Enthusiast / Prosumer** | **RTX 4090 24 GB** | The long-standing gold standard for local development, large LLM fine-tuning, and prototyping before moving to enterprise hardware. |
+| **New Professional Standard** | **RTX 5090 32 GB** | The current top-tier consumer choice, offering 32GB of VRAM and significant performance gains, making it the preferred card for data scientists in 2026. |
+| **Budget / Student** | **RTX 3060 12 GB / 5060 Ti 16 GB ** | These remain popular due to their VRAM-to-price ratio, allowing students and hobbyists to run LLM inference and small-scale training projects locally without a massive investment. |
