@@ -42,8 +42,9 @@ No hacer $ conda update --all -c conda-forge -y porque instala una versión de P
 Para comprobar las versiones de librerías y que está funcionando CUDA en PyTorch ejecutar `version.py` \
 Para monitorizar el uso de la GPU usar `./monitor.sh` en una ventana de Terminal
 
+
 | GPU Category | Model | Key Advantage for AI |
 | :--- | :--- | :--- |
-| **Enthusiast / Prosumer** | **RTX 4090 24 GB** | The long-standing gold standard for local development, large LLM fine-tuning, and prototyping before moving to enterprise hardware. |
-| **New Professional Standard** | **RTX 5090 32 GB** | The current top-tier consumer choice, offering 32GB of VRAM and significant performance gains, making it the preferred card for data scientists in 2026. |
-| **Budget / Student** | **RTX 3060 12 GB / 5060 Ti 16 GB ** | These remain popular due to their VRAM-to-price ratio, allowing students and hobbyists to run LLM inference and small-scale training projects locally without a massive investment. |
+| **Enthusiast / Prosumer** | **RTX 4090 24GB** | The long-standing gold standard for local development, large LLM fine-tuning and prototyping before moving to enterprise hardware. |
+| **New Professional Standard** | **RTX 5090 32GB** | The current top-tier consumer and data scientis choice in 2026, offering more VRAM and significant performance gains. |
+| **Budget / Student** | **RTX 3060 12GB / 5060 Ti 16GB** | These remain popular due to their VRAM-to-price ratio, allowing students and hobbyists to run LLM inference and small-scale training projects locally without a massive investment. |
