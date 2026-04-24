@@ -1,4 +1,4 @@
-from mteb import MTEB
+import mteb
 from datasets import load_dataset
 from sentence_transformers import SentenceTransformer
 from sentence_transformers.sentence_transformer import losses  
@@ -41,6 +41,6 @@ eval = evaluator(embedding_model)
 print(f"\nEvaluation: {eval}\n")
 
 # Choose evaluation task
-evaluation = MTEB(tasks=["Banking77Classification"])
-results = evaluation.run(embedding_model)
-print(f"Evaluation: {results}\n")
+tasks = mteb.get_tasks(tasks=["Banking77Classification"])
+eval2 = mteb.evaluate(model=embedding_model, tasks=tasks)
+print(f"Evaluation: {eval2}\n")

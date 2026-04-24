@@ -12,3 +12,7 @@ __pycache__/
 
 # VS Code generated
 .vscode/
+
+# Transformers generated
+results/
+base_embedding_model/
