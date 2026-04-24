@@ -9,8 +9,14 @@
 | *Section 2 - Using Pretrained Language Models* |
 | 4. Text classification | Completed | 19/Apr/2026 | - |
 | 5. Text clustering and topic modeling | Not started | - | - |
-| 6. Prompt engineering | Not started | - | - |
-| 7. Advanced text generation techñniques and tools | Not started | - | - |
+| 6. Prompt engineering | Completed | 24/Apr/2026 | - |
+| 7. Advanced text generation techñniques and tools | Not stated | - | - |
+| 8. Semantic Search and Retrieval - Augmented Generation| Not started | - | - |
+| 9. Multimodal Large Language Models | Not started | - | - |
+| *Section 3 - Training and Fine-Tuning Language Models* |
+| 10. Creating Text Embedding Models | Not started | | - |
+
+
 
 ---
 
