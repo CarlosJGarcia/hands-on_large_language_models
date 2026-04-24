@@ -20,6 +20,8 @@ export CMAKE_ARGS="-DGGML_CUDA=on" \
 export FORCE_CMAKE=1 \
 pip install --upgrade --force-reinstall --no-cache-dir llama-cpp-python \
 
+pip install mteb \
+
 
 **Sobre la instalación de llama-cpp-python con soporte CUDA** \
 Para que la librería use la GPU, es necesario compilarla en local, a partir del código fuente, usando el CUDA toolkit (CUDA Compute Platform) \
