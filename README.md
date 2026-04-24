@@ -45,7 +45,7 @@ Para monitorizar el uso de la GPU usar `./monitor.sh` en una ventana de Terminal
 
 | GPU Category | Model | Key Advantage for AI |
 | :--- | :--- | :--- |
-| **Enthusiast / Prosumer** | **RTX 3090 24GB** | Gold standard for local development in 2022-2023 |
-| **Enthusiast / Prosumer** | **RTX 4090 24GB** | The long-standing gold standard for local development in 2023-2025. Large LLM fine-tuning and prototyping before moving to enterprise hardware. |
-| **New Professional Standard** | **RTX 5090 32GB** | The current top-tier consumer and data scientis choice in 2026, offering more VRAM and significant performance gains. |
-| **Budget / Student** | **RTX 3060 12GB / 5060 Ti 16GB** | These remain popular due to their VRAM-to-price ratio, allowing students and hobbyists to run LLM inference and small-scale training projects locally without a massive investment. These two together are the equivalent of a RTX 3090/4090 with 24 GB|
+| **Enthusiast / Prosumer** | **RTX 3090 24GB** | Gold standard for local development in 2022-2023.|
+| **Enthusiast / Prosumer** | **RTX 4090 24GB** | Gold standard for local development in 2023-2025. Large LLM fine-tuning and prototyping before moving to enterprise hardware. |
+| **New Professional Standard** | **RTX 5090 32GB** | Current top-tier consumer and data scientist choice in 2026, offering more VRAM and significant performance gains. |
+| **Budget / Student** | **RTX 3060 12GB / 5060 Ti 16GB** | Remain popular in 2026 due to their VRAM-to-price ratio, allowing students and hobbyists to run LLM inference and small-scale training projects locally without a massive investment. These two together are the equivalent of a RTX 4090 with 24 GB.|
