@@ -1,4 +1,5 @@
 import mteb
+import warnings
 from datasets import load_dataset
 from sentence_transformers import SentenceTransformer
 from sentence_transformers.sentence_transformer import losses  
@@ -6,14 +7,22 @@ from sentence_transformers.sentence_transformer.evaluation import EmbeddingSimil
 from sentence_transformers.sentence_transformer.training_args import SentenceTransformerTrainingArguments
 from sentence_transformers.sentence_transformer.trainer import SentenceTransformerTrainer
 
+# Suppress FutureWarning from MTEB
+warnings.filterwarnings("ignore", category=FutureWarning, module="mteb")
+
+
 # Load MNLI dataset from GLUE
 # 0 = entailment, 1 = neutral, 2 = contradiction
 train_dataset = load_dataset("glue", "mnli", split="train").select(range(50_000))
 train_dataset = train_dataset.remove_columns("idx")
 
+# Reorder the dataset columns ['premise', 'hypothesis', 'label'] so 'hypothesis' is at index 0, do this:
+train_dataset = train_dataset.select_columns(['hypothesis', 'premise', 'label'])
+
 # Check one example
 print(f"\nTrain dataset successfully loaded.\n")
 print(f"{train_dataset[2]}\n")
+
 
 # Use a base model
 MODEL_ID = "bert-base-uncased"
