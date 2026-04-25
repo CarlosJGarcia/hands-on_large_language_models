@@ -16,3 +16,4 @@ __pycache__/
 # Transformers generated
 results/
 base_embedding_model/
+finetuned_embedding_model/
