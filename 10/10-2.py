@@ -7,8 +7,6 @@ from sentence_transformers.sentence_transformer.evaluation import EmbeddingSimil
 from sentence_transformers.sentence_transformer.training_args import SentenceTransformerTrainingArguments
 from sentence_transformers.sentence_transformer.trainer import SentenceTransformerTrainer
 
-# Suppress FutureWarning from MTEB
-#warnings.filterwarnings("ignore", category=FutureWarning, module="mteb")
 
 # Load MNLI dataset from GLUE
 # 0 = entailment, 1 = neutral, 2 = contradiction
@@ -21,14 +19,6 @@ train_dataset = train_dataset.select_columns(['hypothesis', 'premise', 'label'])
 # Check one example
 print(f"\nTrain dataset successfully loaded.")
 print(f"Example: {train_dataset[2]}\n")
-
-# Use a base model
-#MODEL_ID = "bert-base-uncased"
-#embedding_model = SentenceTransformer(MODEL_ID)
-#print(f"\nModel {MODEL_ID} successfully loaded.\n")
-#
-# Define the loss function. In softmax loss, we will also need to explicitly set the number of labels.
-#train_loss = losses.SoftmaxLoss(model=embedding_model, embedding_dimension=embedding_model.get_embedding_dimension(), num_labels=3)
 
 # Create an embedding similarity evaluator for STSB
 val_sts = load_dataset("glue", "stsb", split="validation")
@@ -62,7 +52,3 @@ print(f"Training completed.\n")
 eval = evaluator(embedding_model)
 print(f"Evaluation: {eval}\n")
 
-# Choose evaluation task
-#tasks = mteb.get_tasks(tasks=["Banking77Classification"])
-#eval2 = mteb.evaluate(model=embedding_model, tasks=tasks)
-#print(f"Evaluation: {eval2}\n")
