@@ -10,7 +10,7 @@
 | 4. Text classification | Completed | 19/Apr/2026 | - |
 | 5. Text clustering and topic modeling | Not started | - | - |
 | 6. Prompt engineering | Completed | 24/Apr/2026 | - |
-| 7. Advanced text generation techñniques and tools | Not stated | - | - |
+| 7. Advanced text generation techniques and tools | Not stated | - | - |
 | 8. Semantic Search and Retrieval - Augmented Generation| Not started | - | - |
 | 9. Multimodal Large Language Models | Not started | - | - |
 | *Section 3 - Training and Fine-Tuning Language Models* |
@@ -21,9 +21,9 @@
 ---
 
 ### Notes
-- Frontier model: Los modelos 'tope de gama' que se ejecutan en un datacenter y a los que se accede mediante un API a través de internet (Gemini, Claude, ChatGPT)
+- Frontier model: Los modelos 'tope de gama' que se ejecutan en un datacenter y a los que se accede mediante un API a través de Internet (Gemini, Claude, ChatGPT)
 
-- Edge model: Los modelos compactos pensados para ejecutarse localmente en un smartphone o en un ordenador, incluso con hardware dedicado (RTX 3060 12 GB, RTX 5060 16 GB, etc)
+- Edge model: Los modelos compactos pensados para ejecutarse localmente en un smartphone o en un ordenador, incluso con hardware dedicado (RTX 3060 12 GB, RTX 5060 16 GB, etc.)
 
 - Representation model: Son modelos no-generativos. Son modelos 'decodificadores' o clasificadores. Entienden el sentido de un texto y lo pueden clasificar (análisis de sentimientos, búsquedas en el documento, es spam o no-spam)
 

@@ -2,11 +2,10 @@
 __pycache__/
 .ipynb_checkpoints
 
-
 # MacOS generated
 .DS_Store
 
-# PyTorch & NumPy  data files
+# PyTorch & NumPy data files
 *.pt
 *.npz
 
