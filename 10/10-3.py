@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from datasets import load_dataset, Dataset
@@ -51,3 +52,19 @@ args = CrossEncoderTrainingArguments(
 # Training on the gold dataset
 trainer = CrossEncoderTrainer(model=cross_encoder, args=args, train_dataset=train_dataset)
 trainer.train()
+
+
+# Prepare the silver dataset by predicting labels with the cross-encoder
+silver = load_dataset("glue", "mnli", split="train").select(range(10_000, 50_000))
+pairs = list(zip(silver["premise"], silver["hypothesis"]))
+
+
+# Label the sentence pairs using our fine-tuned cross-encoder
+output = cross_encoder.predict(pairs, apply_softmax=True, show_progress_bar=True)
+silver = pd.DataFrame(
+    {
+        "sentence1": silver["premise"], 
+        "sentence2": silver["hypothesis"],
+        "label": np.argmax(output, axis=1)
+    }
+)

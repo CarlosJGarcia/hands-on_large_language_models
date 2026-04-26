@@ -21,6 +21,7 @@ export FORCE_CMAKE=1 \
 pip install --upgrade --force-reinstall --no-cache-dir llama-cpp-python \
 
 pip install mteb \
+conda install rich -c conda-forge \
 
 
 **Sobre la instalación de llama-cpp-python con soporte CUDA** \
