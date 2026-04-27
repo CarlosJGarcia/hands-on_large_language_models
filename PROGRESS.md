@@ -26,6 +26,14 @@
 
 - Edge model: Los modelos compactos pensados para ejecutarse localmente en un smartphone o en un ordenador, incluso con hardware dedicado (RTX 3060 12 GB, RTX 5060 16 GB, etc.)
 
+| | Representational Models | Embedding Models | Generative Models |
+|---------|------------------|----------------|-------|
+| Primary Goal | Son modelos no-generativos. Son modelos "decodificadores". Transforman los datos de entrada (imágenes, texto, audio, etc.) en un tensor numérico. A partir de ese tensor podemos clasificar los datos (análisis de sentimientos, búsquedas en documentos, spam / no-spam). | Mapean los datos a puntos en el espacio basados en parecidos. Permiten agrupar los datos (por ejemplo las palabras "rey" y "reina") por múltiples criterios | Generan una salida basándose en patrones aprendidos. Son modelos diseñados para crear contenido nuevo a partir de una instrucción (prompt). Entienden el sentido de un texto (necesario para 'entender' el prompt) y predicen la continuación más probable, para generar respuestas, código, resúmenes o traducciones |
+| Output | Características del input |Vector numérico de longitud fija | Token, imagen, vídieo |
+| Philosophy | ¿Que es esto? | ¿Donde encaja esto? | ¿Qué viene a continuación? |
+| Example | BERT | Word2Vec | GPT-4 |
+
+
 - Representation model: Son modelos no-generativos. Son modelos 'decodificadores' o clasificadores. Entienden el sentido de un texto y lo pueden clasificar (análisis de sentimientos, búsquedas en el documento, es spam o no-spam)
 
 - Generative model: Modelos diseñados para crear contenido nuevo a partir de una instrucción (prompt). Entienden el sentido de un texto (necesario para 'entender' el prompt) y predicen la continuación más probable, para generar respuestas, código, resúmenes o traducciones
