@@ -22,6 +22,7 @@ pip install --upgrade --force-reinstall --no-cache-dir llama-cpp-python \
 
 pip install mteb \
 conda install rich -c conda-forge \
+conda install nltk -c conda-forge \
 
 
 **Sobre la instalación de llama-cpp-python con soporte CUDA** \

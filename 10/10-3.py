@@ -118,9 +118,13 @@ args = SentenceTransformerTrainingArguments(
     logging_steps=100,
 )
 
-
 # Train model
 trainer = SentenceTransformerTrainer(model=embedding_model, args=args, train_dataset=train_dataset, loss=train_loss, evaluator=evaluator)
 console.print(f"Training starts.\n", style="gold1")
 trainer.train()
 console.print(f"\nTraining completed.\n", style="gold1")
+
+
+# Evaluate the trained model
+eval = evaluator(embedding_model)
+print(f"Evaluation: {eval}\n")
