@@ -16,5 +16,6 @@ __pycache__/
 results/
 base_embedding_model/
 cross_encoder_output/
+tsdae_embedding_model/
 finetuned_embedding_model/
 augmented_embedding_model/
