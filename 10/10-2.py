@@ -47,8 +47,7 @@ trainer.train()
 console.print(f"\nTraining completed.\n", style="gold1")
 
 
-# Evaluate our trained model
-#evaluator(embedding_model)
+# Evaluate the trained model
 eval = evaluator(embedding_model)
 print(f"Evaluation: {eval}\n")
 

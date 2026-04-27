@@ -34,11 +34,6 @@
 | Example | BERT | Word2Vec | GPT-4 |
 
 
-- Representation model: Son modelos no-generativos. Son modelos 'decodificadores' o clasificadores. Entienden el sentido de un texto y lo pueden clasificar (análisis de sentimientos, búsquedas en el documento, es spam o no-spam)
-
-- Generative model: Modelos diseñados para crear contenido nuevo a partir de una instrucción (prompt). Entienden el sentido de un texto (necesario para 'entender' el prompt) y predicen la continuación más probable, para generar respuestas, código, resúmenes o traducciones
-
-
 ### Librerías
 
 - Data Science:

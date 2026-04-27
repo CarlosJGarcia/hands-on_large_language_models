@@ -1,9 +1,14 @@
+# Basel, 27/Apr/2026
+# NVIDIA GeForce RTX 3060: 100% GPU, 83% RAM (10.2GB de 12GB), 169W (max 170W), 74% ventilador
+
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+from rich.console import Console
 from datasets import load_dataset, Dataset
 from sentence_transformers import InputExample
 from sentence_transformers.cross_encoder import CrossEncoder
+from sentence_transformers.sentence_transformer import losses  
 
 # Las siguientes dos líneas sustityuen a from sentence_transformers.datasets import NoDuplicatesDataLoader
 from sentence_transformers import SentenceTransformer, SentenceTransformerTrainer, SentenceTransformerTrainingArguments
@@ -11,6 +16,8 @@ from sentence_transformers.sentence_transformer.training_args import BatchSample
 
 from sentence_transformers.cross_encoder.trainer import CrossEncoderTrainer
 from sentence_transformers.cross_encoder.training_args import CrossEncoderTrainingArguments
+from sentence_transformers.sentence_transformer.evaluation import EmbeddingSimilarityEvaluator
+
 
 # Prepare a small set of 10000 documents for the cross-encoder
 dataset = load_dataset("glue", "mnli", split="train").select(range(10_000))
@@ -68,3 +75,52 @@ silver = pd.DataFrame(
         "label": np.argmax(output, axis=1)
     }
 )
+
+# Combine gold + silver
+console = Console()
+console.print(f"\nGold + Silver combined.", style="gold1")
+data = pd.concat([gold, silver], ignore_index=True, axis=0)
+data = data.drop_duplicates(subset=["sentence1", "sentence2"], keep="first")
+train_dataset = Dataset.from_pandas(data, preserve_index=False)
+
+
+# Create an embedding similarity evaluator for stsb
+val_sts = load_dataset("glue", "stsb", split="validation")
+evaluator = EmbeddingSimilarityEvaluator(
+    sentences1=val_sts["sentence1"],
+    sentences2=val_sts["sentence2"],
+    scores=[score/5 for score in val_sts["label"]], # Normalize 0-5 to 0-1
+    main_similarity="cosine",
+    name="sts-b-validation"
+)
+console.print("Evaluator created.\n", style="gold1")
+
+
+# Load model
+MODEL_ID = "bert-base-uncased"
+embedding_model = SentenceTransformer(MODEL_ID)
+print(f"Model {MODEL_ID} successfully loaded.\n")
+
+
+# Define the loss function
+train_loss = losses.CosineSimilarityLoss(model=embedding_model)
+console.print("Loss function defined.\n", style="gold1")
+
+# Define the training arguments
+args = SentenceTransformerTrainingArguments(
+    output_dir="augmented_embedding_model",
+    num_train_epochs=1,
+    per_device_train_batch_size=32,
+    per_device_eval_batch_size=32,
+    warmup_steps=100,
+    fp16=True,
+    eval_steps=100,
+    logging_steps=100,
+)
+
+
+# Train model
+trainer = SentenceTransformerTrainer(model=embedding_model, args=args, train_dataset=train_dataset, loss=train_loss, evaluator=evaluator)
+console.print(f"Training starts.\n", style="gold1")
+trainer.train()
+console.print(f"\nTraining completed.\n", style="gold1")
