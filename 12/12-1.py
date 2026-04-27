@@ -1,9 +1,12 @@
 import torch
 from datasets import load_dataset
 from trl import SFTTrainer, SFTConfig
+from transformers import pipeline
 from transformers import AutoTokenizer
 from transformers import TrainingArguments
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+
+from peft import AutoPeftModelForCausalLM
 from peft import LoraConfig, prepare_model_for_kbit_training, get_peft_model
 
 
@@ -23,7 +26,7 @@ def format_prompt(example):
 
 # Load and format the data using the template TinyLLama is using
 dataset = (load_dataset("HuggingFaceH4/ultrachat_200k", split="test_sft").shuffle(seed=42).select(range(3_000)))
-dataset = dataset.map(format_prompt)
+dataset = dataset.map(format_prompt, remove_columns=dataset.column_names)
 
 # Example of formatted prompt
 print(dataset["text"][2576])
@@ -32,10 +35,10 @@ model_name = "TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T"
 
 # 4-bit quantization configuration - Q in QLoRA
 bnb_config = BitsAndBytesConfig(
-    load_in_4bit=True,  # Use 4-bit precision model loading
-    bnb_4bit_quant_type="nf4",  # Quantization type
-    bnb_4bit_compute_dtype="float16",  # Compute dtype
-    bnb_4bit_use_double_quant=True,  # Apply nested quantization
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype="bfloat16",  # Change float16 -> bfloat16
+    bnb_4bit_use_double_quant=True,
 )
 
 # Load the model to train on the GPU
@@ -51,7 +54,8 @@ model.config.pretraining_tp = 1
 
 # Load LLaMA tokenizer
 tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-tokenizer.pad_token = "<PAD>"
+# tokenizer.pad_token = "<PAD>"
+tokenizer.pad_token = tokenizer.eos_token
 tokenizer.padding_side = "left"
 
 
@@ -82,12 +86,9 @@ sft_config = SFTConfig(
     lr_scheduler_type="cosine",
     num_train_epochs=1,
     logging_steps=10,
-    fp16=True,
+    bf16=True,             # Change this to True
+    fp16=False,            # Change this to False
     gradient_checkpointing=True,
-    
-    # RENAME: In current TRL versions:
-    # 1. 'dataset_text_field' stays here.
-    # 2. 'max_seq_length' is now 'max_length'.
     dataset_text_field="text",
     max_length=512, 
 )
@@ -95,12 +96,11 @@ sft_config = SFTConfig(
 
 # Set supervised fine-tuning parameters
 trainer = SFTTrainer(
-    model=model,
+    model=model,           # This is already your PeftModel
     train_dataset=dataset,
-    # RENAME: 'tokenizer' is now 'processing_class'
     processing_class=tokenizer, 
     args=sft_config,
-    peft_config=peft_config,
+    # REMOVE: peft_config=peft_config,  <-- This line is causing the error
 )
 
 # Train model
@@ -108,3 +108,22 @@ trainer.train()
 
 # Save QLoRA weights
 trainer.model.save_pretrained("TinyLlama-1.1B-qlora")
+
+model = AutoPeftModelForCausalLM.from_pretrained(
+    "TinyLlama-1.1B-qlora",
+    low_cpu_mem_usage=True,
+    device_map="auto",
+)
+
+# Merge LoRA and base model
+merged_model = model.merge_and_unload()
+
+# Use our predefined prompt template
+prompt = """<|user|>
+Tell me something about Large Language Models.</s>
+<|assistant|>
+"""
+
+# Run our instruction-tuned model
+pipe = pipeline(task="text-generation", model=merged_model, tokenizer=tokenizer)
+print(pipe(prompt)[0]["generated_text"])
