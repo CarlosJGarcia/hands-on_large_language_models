@@ -1,5 +1,5 @@
 **Instalación del entorno** \
-conda create --name hands-on_llm_cuda --clone llm_scratch_cuda
+conda create --name hands-on_llm_cuda --clone llm_scratch_cuda \
 conda activate hands-on_llm_cuda \
 conda install -c conda-forge sentencepiece \
 conda install -c conda-forge protobuf \
@@ -26,16 +26,20 @@ conda install nltk -c conda-forge \
 pip install peft \
 pip install trl \
 
+**No hacer esto ya que rompe todo el entorno -->** conda install umap-learn -c conda-forge \
+**En todo caso, probar esto  -->** pip install umap-learn   
+
+
 
 **Sobre la instalación de llama-cpp-python con soporte CUDA** \
-Para que la librería use la GPU, es necesario compilarla en local, a partir del código fuente, usando el CUDA toolkit (CUDA Compute Platform) \
+Para que la librería use la GPU, es necesario compilarla en local, a partir del código fuente, usando el CUDA toolkit (CUDA Compute Platform) 
 
 **Llama, llama.cpp y ollama** \
 ollama está desarrollado usando la librería llama.cpp \
 llama.cpp se desarrolló para permitir cargar y usar el modelo Llama de Meta en portátiles con CPU o CPU+GPU. Anteriormente Llama solo funcionaba usando PyTorch en servidores \
 llama.cpp es la librería core en C/C++ para cargar y usar LLMs. llama-cpp-python es un wrapper de mas alto nivel en python.
 Por este motivo, se descarga llama-cpp-python con PIP, se compila el código llama.cpp usando el CUDA toolkit y ya se puede usar la libraria python
-Actualmente, tanto llama.cpp como ollama permiten usar cualquier LLM, no solo Llama, sino también Gemma, Mistral, etc. \
+Actualmente, tanto llama.cpp como ollama permiten usar cualquier LLM, no solo Llama, sino también Gemma, Mistral, etc. 
 
 
 **Importante:** \
