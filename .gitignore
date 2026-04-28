@@ -14,6 +14,7 @@ __pycache__/
 
 # Transformers generated
 results/
+results-2/
 base_embedding_model/
 cross_encoder_output/
 TinyLlama-1.1B-qlora/
