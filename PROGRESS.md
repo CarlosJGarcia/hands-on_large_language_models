@@ -16,7 +16,7 @@
 | *Section 3 - Training and Fine-Tuning Language Models* |
 | 10. Creating Text Embedding Models | Completed | 27/Apr/2026 | - |
 | 11. Fine-Tuning Representation Models for Classification | Not started | | - |
-| 12. Fine-Tuning Generation Models | Not started | | - |
+| 12. Fine-Tuning Generation Models | Completed | 28/Apr/2026 | - |
 
 
 ---

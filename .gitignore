@@ -19,5 +19,6 @@ base_embedding_model/
 cross_encoder_output/
 TinyLlama-1.1B-qlora/
 tsdae_embedding_model/
+TinyLlama-1.1B-dpo-qlora/
 finetuned_embedding_model/
 augmented_embedding_model/
