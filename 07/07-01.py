@@ -2,9 +2,10 @@ from rich.console import Console
 from langchain_community.llms import LlamaCpp
 
 # Modelo: Phi-3-mini version fp16 (full precision) 3.8B (Billion) Parameters, 8 GB VRAM
-MODEL_PATH = "./Phi-3-mini-4k-instruct-fp16.gguf"
+MODEL_PATH = "../models/Phi-3-mini-4k-instruct-fp16.gguf"
 
 # Cargando el modelo
+print(f"Loading model {MODEL_PATH} in the GPU")
 llm = LlamaCpp(model_path=MODEL_PATH, n_gpu_layers=-1, max_tokens=1024, n_ctx=4096, seed=42, verbose=False)
 
 # Local, GPU-accelerated LLM inference

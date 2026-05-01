@@ -22,3 +22,6 @@ tsdae_embedding_model/
 TinyLlama-1.1B-dpo-qlora/
 finetuned_embedding_model/
 augmented_embedding_model/
+
+# Carpeta para LLMs. Formato principal: GGUF
+models/
