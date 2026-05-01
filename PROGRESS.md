@@ -8,7 +8,7 @@
 | 3. Looking into LLMs | Completed | 13/Apr/2026 | - |
 | *Section 2 - Using Pretrained Language Models* |
 | 4. Text classification | Completed | 19/Apr/2026 | - |
-| 5. Text clustering and topic modeling | Not started | - | - |
+| 5. Text clustering and topic modeling | Started | - | Library issues |
 | 6. Prompt engineering | Completed | 24/Apr/2026 | - |
 | 7. Advanced text generation techniques and tools | Not stated | - | - |
 | 8. Semantic Search and Retrieval - Augmented Generation| Not started | - | - |
