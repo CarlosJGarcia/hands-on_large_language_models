@@ -1,7 +1,7 @@
 from rich.console import Console
 from langchain_community.llms import LlamaCpp
 
-# Modelo: Phi-3-mini version fp16 (full precision) 3.8B (Billion) Parameters, 8 GB VRAM
+# Modelo: Microsoft Phi-3-mini version fp16 (full precision) 3.8B (Billion) Parameters, 8 GB VRAM. Es text-only, no multimodal.
 MODEL_PATH = "../models/Phi-3-mini-4k-instruct-fp16.gguf"
 
 # Cargando el modelo
@@ -18,6 +18,10 @@ print(prompt)
 response = llm.invoke(prompt)
 console.print(f"\n--- Response ---", style="gold1")
 print(response)
+
+# Pause 0
+print()
+key = input("Press ENTER to exit.")
 
 # Manual cleanup to prevernt an Exception ignored in: <function Llama.__del__ at 0x7f99fb00a700> error when exiting the python script
 del llm
