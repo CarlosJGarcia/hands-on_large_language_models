@@ -10,10 +10,10 @@ from langchain_community.llms import LlamaCpp
 
 console = Console()
 
-# Modelo: Microsoft Phi-3-mini, version fp16 (full precision) 3.8B (billion) parameters, 8 GB VRAM. Text-only, no multimodal. Requiere template.
+# Modelo: Microsoft Phi-3-mini, version fp16 (full precision) 3.8B (billion) parameters, 8 GB VRAM. Text-only, no multimodal. Requires prompt template.
 MODEL_PATH = "../models/Phi-3-mini-4k-instruct-fp16.gguf"
 
-# Cargando el modelo
+# Cargando el modelo en la GPU a partir del fichero GGUF
 print(f"Loading model {MODEL_PATH} in the GPU")
 model = LlamaCpp(model_path=MODEL_PATH, n_gpu_layers=-1, max_tokens=1024, n_ctx=4096, seed=42, verbose=False)
 
