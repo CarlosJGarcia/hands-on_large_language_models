@@ -20,7 +20,7 @@ ELIZA is a mock (Rogerian) psychotherapist."""
 # Cargando el modelo
 print(f"Loading model {MODEL_PATH} in the GPU")
 try:
-    llm = LlamaCpp(model_path=MODEL_PATH, n_gpu_layers=-1, max_tokens=1024, n_ctx=4096, seed=42, verbose=False)
+    model = LlamaCpp(model_path=MODEL_PATH, n_gpu_layers=-1, max_tokens=1024, n_ctx=4096, seed=42, verbose=False)
 except Exception as e:
     print(f"Error loading model: {e}")
     exit(1)
@@ -53,7 +53,7 @@ while True:
     )
     
     try:
-        response = llm.invoke(prompt)
+        response = model.invoke(prompt)
         #response = llm(prompt, stop=["===", "User:", "\n\n"])
         # The user wants the session to look like: ELIZA: IN WHAT WAY?
         # So we strip and uppercase the response.
@@ -63,5 +63,5 @@ while True:
         print(f"ELIZA: ERROR IN PROCESSING: {str(e).upper()}")
 
 # Manual cleanup
-del llm
+del model
 print()
