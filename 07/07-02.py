@@ -1,6 +1,10 @@
 # Reinach, 03/May/2026
 # NVIDIA GeForce RTX 3060: x% GPU, 72% VRAM (8.8GB de 12GB), xW (max 170W), x% ventil
 
+# Engine: LlamaCpp hosting Phi-3-mini 
+# Bridge: llama-cpp-python (library langchain_community)
+# Orchestrator: LangChain (library langchain-core)
+
 from rich.console import Console
 from langchain_core.prompts import PromptTemplate
 from langchain_community.llms import LlamaCpp

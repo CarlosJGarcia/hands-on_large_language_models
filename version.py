@@ -10,8 +10,8 @@ import transformers
 
 # llama.cpp
 import llama_cpp
+import langchain_core
 import langchain_community
-from llama_cpp.llama import Llama
 
 
 print()
@@ -25,6 +25,7 @@ print(f"Tiktoken           : {version('tiktoken')}")
 print(f"Tokenizers         : {tokenizers.__version__}")
 print(f"Bitsandbytes       : {version('bitsandbytes')}")
 print(f"llama-cpp-python   : {llama_cpp.__version__}")
+print(f"langchain-core     : {langchain_core.__version__}") # Add this line
 print(f"langchain-community: {langchain_community.__version__}")
 print(f"Transformers       : {transformers.__version__}")
 print(f"OpenAI             : {openai.__version__}")
