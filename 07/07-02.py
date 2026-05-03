@@ -18,10 +18,7 @@ model = LlamaCpp(model_path=MODEL_PATH, n_gpu_layers=-1, max_tokens=1024, n_ctx=
 
 
 # Define the prompt template string. LangChain will internally replace the {input_prompt} part
-template = """<s><|user|>
-{texto}<|end|>
-<|assistant|>"""
-
+template = "<|endoftext|><|user|>\n{texto}<|end|>\n<|assistant|>\n"
 prompt = PromptTemplate(template=template, input_variables=["texto"])
 
 # Define the chain
@@ -32,14 +29,14 @@ basic_chain = prompt | model
 
 
 # Create a Chain that creates our business' name
-question = "Create a funny name for a business that sells {product}."
-name_prompt = PromptTemplate(template=template, input_variables=["product"])
+# question = "Create a funny name for a business that sells {product}."
+# name_prompt = PromptTemplate(template=template, input_variables=["product"])
 
 
 
 # Inferencia local en GPU. Uso el método invoke() del objeto model. Phi-3-mini requiere template.
 question = "What are the advantages of using 16-bit precision in AI?"
-prompt = "<|user|>\n" + question + "<|end|>\n<|assistant|>\n"
+prompt = "<|endoftext|><|user|>\n" + question + "<|end|>\n<|assistant|>\n"
 console = Console()
 console.print(f"\n--- Sending Prompt ---", style="gold1")
 print(prompt)
@@ -47,6 +44,22 @@ print(prompt)
 response = model.invoke(prompt)
 console.print(f"\n--- Response ---", style="gold1")
 print(response)
+
+
+# Inferencia local en GPU. Uso el método invoke() del objeto basic_chain. Ya no tengo que aplicar la template a mano, lo hace basic_chain automáticamente
+question = "What are the advantages of using 16-bit precision in AI?"
+console.print(f"\n--- Sending Prompt ---", style="gold1")
+print(question)
+    
+response = basic_chain.invoke({"texto": question,})
+console.print(f"\n--- Response ---", style="gold1")
+print(response)
+
+
+
+
+
+
 
 # Pause 0
 print()
