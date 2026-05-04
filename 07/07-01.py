@@ -1,17 +1,20 @@
 from rich.console import Console
 from langchain_community.llms import LlamaCpp
 
+console = Console()
+
 # Modelo: Microsoft Phi-3-mini version fp16 (full precision) 3.8B (Billion) Parameters, 8 GB VRAM. Es text-only, no multimodal.
 MODEL_PATH = "../models/Phi-3-mini-4k-instruct-fp16.gguf"
 
 # Cargando el modelo
+console.print(f"Llama-cpp-python", style="gold1")
 print(f"Loading model {MODEL_PATH} in the GPU")
 model = LlamaCpp(model_path=MODEL_PATH, n_gpu_layers=-1, max_tokens=1024, n_ctx=4096, seed=42, verbose=False)
 
 # Inferencia local en GPU. Uso el método invoke() del objeto model. Phi-3-mini requiere template.
 question = "What are the advantages of using 16-bit precision in AI?"
 prompt = "<|user|>\n" + question + "<|end|>\n<|assistant|>\n"
-console = Console()
+
 console.print(f"\n--- Sending Prompt ---", style="gold1")
 print(prompt)
     

@@ -1,4 +1,6 @@
-# Reinach, 03/May/2026
+# A Chain with Multiple Prompts
+
+# Basel, 04/May/2026
 # NVIDIA GeForce RTX 3060: x% GPU, 72% VRAM (8.8GB de 12GB), xW (max 170W), x% ventil
 # Engine: LlamaCpp hosting Phi-3-mini 
 # Bridge: llama-cpp-python (library langchain_community)
@@ -21,38 +23,32 @@ model = LlamaCpp(model_path=MODEL_PATH, n_gpu_layers=-1, max_tokens=1024, n_ctx=
 
 # Método "automático". Define the chain
 # The pipe operator (|) in Python is OR, but LangChain "overloads" the pipe operator to work like a Unix pipe
-template = "<|endoftext|><|user|>\n{texto}<|end|>\n<|assistant|>\n"
-prompt = PromptTemplate(template=template, input_variables=["texto"])
-chain = prompt | model
+# template = "<|endoftext|><|user|>\n{texto}<|end|>\n<|assistant|>\n"
+# prompt = PromptTemplate(template=template, input_variables=["texto"])
+# chain = prompt | model
 
 
-# Inferencia local en GPU. Mëtodo "manual". Construyo el 'prompt' y uso el método invoke() del objeto model
-question = "What are the advantages of using 16-bit precision in AI?"
-prompt = "<|endoftext|><|user|>\n" + question + "<|end|>\n<|assistant|>\n"
-
-console.print(f"\n--- Sending Prompt directly ---", style="gold1")
-print(prompt)
-    
-response = model.invoke(prompt)
-console.print(f"\n--- Response ---", style="gold1")
-print(response)
+# Define the chain for the title of our story
+# The pipe operator (|) in Python is OR, but LangChain "overloads" the pipe operator to work like a Unix pipe
+template = "<|endoftext|><|user|>\nCreate a title for a story about {summary}. Only return the title.<|end|>\n<|assistant|>\n"
+title_prompt = PromptTemplate(template=template, input_variables=["summary"])
+title_chain = title_prompt | model
 
 
 # Inferencia local en GPU. Método "automático con chain". Uso el método invoke() del objeto chain. Ya no tengo que aplicar la template a mano, lo hace chain automáticamente
-question = "What are the advantages of using 16-bit precision in AI?"
-console.print(f"\n--- Sending Prompt with chain ---", style="gold1")
+question = "a girl that lost her mother"
+console.print(f"\n--- Sending Prompt with chain (title_chain) ---", style="gold1")
 print(question)
     
-response = chain.invoke({"texto": question,})
+response = title_chain.invoke({"summary": question,})
 console.print(f"\n--- Response ---", style="gold1")
 print(response)
-
 
 # Pause 0
 print()
 key = input("Press ENTER to exit.")
 
 # Libero recursos manualmente. Si no, la librería muestra un warning al cerrar; Exception ignored in: <function Llama.__del__ at 0x7f99fb00a700> error when exiting the python script
-del chain  # As basic_chain contains model
+del title_chain  # As title_chain contains model
 del model
 print()
