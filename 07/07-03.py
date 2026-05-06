@@ -1,16 +1,10 @@
-# A Chain with Multiple Prompts
+# A Chain with Multiple Prompts (Fixed Version)
 
-# Basel, 04/May/2026
-# NVIDIA GeForce RTX 3060: x% GPU, 72% VRAM (8.8GB de 12GB), xW (max 170W), x% ventil
+# Basel, 06/May/2026
+# NVIDIA GeForce RTX 5060 Ti: Optimized GPU Inference
 # Engine: LlamaCpp hosting Phi-3-mini 
 # Bridge: llama-cpp-python (library langchain_community)
-# Orchestrator: LangChain (library langchain-core)
-
-# Out of memory en la tarjeta de 12 GB VRAM
-# /tmp/pip-install-hxsm9wca/llama-cpp-python_515500c6b7a64f63a222e7a60f398abf/vendor/llama.cpp/ggml/src/ggml-cuda/ggml-cuda.cu:97: CUDA error
-# Aborted (core dumped)
-# Unable to attach: program terminated with signal SIGABRT, Aborted.
-
+# Orchestrator: LangChain (library langchain-core) - Chain with Multiple Prompts
 
 from rich.console import Console
 from langchain_community.llms import LlamaCpp
@@ -20,86 +14,87 @@ from langchain_core.runnables import RunnablePassthrough
 
 console = Console()
 
-# Modelo: Microsoft Phi-3-mini, version fp16 (full precision) 3.8B (billion) parameters, 8 GB VRAM. Text-only, no multimodal. Requires prompt template.
+# Modelo: Microsoft Phi-3-mini, version fp16 (full precision) 3.8B parameters, 8 GB VRAM.
 MODEL_PATH = "../models/Phi-3-mini-4k-instruct-fp16.gguf"
 
 # Cargando el modelo en la GPU a partir del fichero GGUF
 console.print(f"Llama-cpp-python", style="gold1")
 print(f"Loading model {MODEL_PATH} in the GPU")
-model = LlamaCpp(model_path=MODEL_PATH, n_gpu_layers=-1, max_tokens=1024, n_ctx=4096, seed=42, verbose=False)
+model = LlamaCpp(
+    model_path=MODEL_PATH, 
+    n_gpu_layers=-1, 
+    max_tokens=1024, 
+    n_ctx=4096, 
+    seed=42, 
+    verbose=False
+)
 
+# ---------------------------------------------------------------------
+# Define the templates
+# ---------------------------------------------------------------------
+template_title = "<|endoftext|><|user|>\nCreate a title for a story about {summary}. Only return the title.<|end|>\n<|assistant|>\n"
+title_prompt = PromptTemplate(template=template_title, input_variables=["summary"])
 
+template_char = "<|endoftext|><|user|>\nDescribe the main character of a story about {summary} with the title '{title}'. Use only two sentences.<|end|>\n<|assistant|>\n"
+character_prompt = PromptTemplate(template=template_char, input_variables=["summary", "title"])
 
-# Define the chain for the title
-# The pipe operator (|) in Python is OR, but LangChain "overloads" the pipe operator to work like a Unix pipe
-template = "<|endoftext|><|user|>\nCreate a title for a story about {summary}. Only return the title.<|end|>\n<|assistant|>\n"
-title_prompt = PromptTemplate(template=template, input_variables=["summary"])
-title_chain = title_prompt | model
+template_story = "<|endoftext|><|user|>\nCreate a story about {summary} with the title '{title}'. The main character is: {character}. Only return the story and it cannot be longer than one paragraph.<|end|>\n<|assistant|>\n"
+story_prompt = PromptTemplate(template=template_story, input_variables=["summary", "title", "character"])
 
+# ---------------------------------------------------------------------
+# Standalone execution test (Title only)
+# ---------------------------------------------------------------------
+title_chain = title_prompt | model | StrOutputParser()
 
-# Inferencia local en GPU. Método "automático con chain". Uso el método invoke() del objeto chain. Ya no tengo que aplicar la template a mano, lo hace chain automáticamente
 question = "a girl that lost her mother"
 console.print(f"\n--- Sending Prompt with chain (title_chain) ---", style="gold1")
 print(question)
     
-response = title_chain.invoke({"summary": question,})
+response = title_chain.invoke({"summary": question})
 console.print(f"\n--- Response ---", style="gold1")
 print(response)
 
+# ---------------------------------------------------------------------
+# Build the sequential, thread-safe pipeline
+# ---------------------------------------------------------------------
+title_generator = title_prompt | model | StrOutputParser()
+character_generator = character_prompt | model | StrOutputParser()
+story_generator = story_prompt | model | StrOutputParser()
 
-# Define the chain for the character description
-template_char = "<|endoftext|><|user|>\nDescribe the main character of a story about {summary} with the title '{title}'. Use only two sentences.<|end|>\n<|assistant|>\n"
-character_prompt = PromptTemplate(template=template_char, input_variables=["summary", "title"])
-
-# Define the chain for the story
-template_story = "<|endoftext|><|user|>\nCreate a story about {summary} with the title '{title}'. The main character is: {character}. Only return the story and it cannot be longer than one paragraph.<|end|>\n<|assistant|>\n"
-story_prompt = PromptTemplate(template=template_story, input_variables=["summary", "title", "character"])
-
-# Generate the title
-title_chain = title_prompt | model | StrOutputParser()
-
-
-# Generate character description (needs summary + title)
-# We use a dictionary to "carry forward" the summary while adding the title result
-character_chain = (
-    {"summary": lambda x: x["summary"], "title": title_chain}
-    | character_prompt 
-    | model 
-    | StrOutputParser()
-)
-    
-
-# Generate the final story (needs summary + title + character)
+# We use RunnablePassthrough.assign to pass dictionaries forward sequentially
 full_chain = (
-    {
-        "summary": lambda x: x["summary"],
-        "title": title_chain,
-        "character": character_chain
-    }
-    | story_prompt
-    | model
-    | StrOutputParser()
+    # Step 1: Receives {"summary": ...} -> Appends "title" to the dict
+    RunnablePassthrough.assign(title=title_generator)
+    
+    # Step 2: Receives {"summary": ..., "title": ...} -> Appends "character" to the dict
+    | RunnablePassthrough.assign(character=character_generator)
+    
+    # Step 3: Receives {"summary": ..., "title": ..., "character": ...} -> Generates final story string
+    | story_generator
 )
 
-# --- Execution ---
-
+# ---------------------------------------------------------------------
+# Execution of the entire chain
+# ---------------------------------------------------------------------
 question = "a girl that lost her mother"
 console.print(f"\n--- Processing Chain ---", style="gold1")
 print(f"Input: {question}")
 
-# We only need to pass the first variable; the chain handles the rest
+# Invoking the full pipeline safely on a single thread
 response = full_chain.invoke({"summary": question})
 
 console.print(f"\n--- Final Result ---", style="gold1")
 print(response)
 
-# Pause 0
+# Pause to view output before exit
 print()
 key = input("Press ENTER to exit.")
 
-# Libero recursos manualmente. Si no, la librería muestra un warning al cerrar; Exception ignored in: <function Llama.__del__ at 0x7f99fb00a700> error when exiting the python script
-del title_chain  # As title_chain contains model
-del character_chain
+# Libero recursos manualmente para prevenir warnings o crashes de CUDA al terminar el script
+del title_chain
+del title_generator
+del character_generator
+del story_generator
 del full_chain
 del model
 print()
