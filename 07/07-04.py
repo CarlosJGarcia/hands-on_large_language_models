@@ -29,75 +29,33 @@ model = LlamaCpp(
 )
 
 
-"""
-# ---------------------------------------------------------------------
-# Define the templates
-# ---------------------------------------------------------------------
-template_title = "<|endoftext|><|user|>\nCreate a title for a story about {summary}. Only return the title.<|end|>\n<|assistant|>\n"
-title_prompt = PromptTemplate(template=template_title, input_variables=["summary"])
+# Define the chain
+# The pipe operator (|) in Python is OR, but LangChain "overloads" the pipe operator to work like a Unix pipe
+template = "<|endoftext|><|user|>\n{texto}<|end|>\n<|assistant|>\n"
+prompt = PromptTemplate(template=template, input_variables=["texto"])
+chain = prompt | model
 
-template_char = "<|endoftext|><|user|>\nDescribe the main character of a story about {summary} with the title '{title}'. Use only two sentences.<|end|>\n<|assistant|>\n"
-character_prompt = PromptTemplate(template=template_char, input_variables=["summary", "title"])
 
-template_story = "<|endoftext|><|user|>\nCreate a story about {summary} with the title '{title}'. The main character is: {character}. Only return the story and it cannot be longer than one paragraph.<|end|>\n<|assistant|>\n"
-story_prompt = PromptTemplate(template=template_story, input_variables=["summary", "title", "character"])
-
-# ---------------------------------------------------------------------
-# Standalone execution test (Title only)
-# ---------------------------------------------------------------------
-title_chain = title_prompt | model | StrOutputParser()
-
-question = "a girl that lost her mother"
-console.print(f"\n--- Sending Prompt with chain (title_chain) ---", style="gold1")
+# Inferencia local en GPU. 
+question = "Hi! My name is Carlos. What is 1 + 1? What's my name?"
+console.print(f"\n--- Sending Prompt with chain ---", style="gold1")
 print(question)
     
-response = title_chain.invoke({"summary": question})
+response = chain.invoke({"texto": question,})
 console.print(f"\n--- Response ---", style="gold1")
 print(response)
 
-# ---------------------------------------------------------------------
-# Build the sequential, thread-safe pipeline
-# ---------------------------------------------------------------------
-title_generator = title_prompt | model | StrOutputParser()
-character_generator = character_prompt | model | StrOutputParser()
-story_generator = story_prompt | model | StrOutputParser()
-
-# We use RunnablePassthrough.assign to pass dictionaries forward sequentially
-full_chain = (
-    # Step 1: Receives {"summary": ...} -> Appends "title" to the dict
-    RunnablePassthrough.assign(title=title_generator)
+# Nueva inferencia local en GPU. Entre la pregunta anterior y esta no hay contexto común.
+question = "What is my name?"
+console.print(f"\n--- Sending Prompt with chain ---", style="gold1")
+print(question)
     
-    # Step 2: Receives {"summary": ..., "title": ...} -> Appends "character" to the dict
-    | RunnablePassthrough.assign(character=character_generator)
-    
-    # Step 3: Receives {"summary": ..., "title": ..., "character": ...} -> Generates final story string
-    | story_generator
-)
-
-# ---------------------------------------------------------------------
-# Execution of the entire chain
-# ---------------------------------------------------------------------
-question = "a girl that lost her mother"
-console.print(f"\n--- Processing Chain ---", style="gold1")
-print(f"Input: {question}")
-
-# Invoking the full pipeline safely on a single thread
-response = full_chain.invoke({"summary": question})
-
-console.print(f"\n--- Final Result ---", style="gold1")
+response = chain.invoke({"texto": question,})
+console.print(f"\n--- Response ---", style="gold1")
 print(response)
 
-# Pause to view output before exit
-print()
-key = input("Press ENTER to exit.")
 
-# Libero recursos manualmente para prevenir warnings o crashes de CUDA al terminar el script
-del title_chain
-del title_generator
-del character_generator
-del story_generator
-del full_chain
-"""
 
+del chain
 del model
 print()
