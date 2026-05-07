@@ -11,6 +11,8 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 
+chat_history = ""
+
 console = Console()
 
 # Modelo: Microsoft Phi-3-mini, version fp16 (full precision) 3.8B parameters, 8 GB VRAM.
@@ -30,9 +32,12 @@ model = LlamaCpp(
 
 
 # Define the chain
+# Create an updated prompt template to include a chat history
+template = "<|endoftext|><|user|>\nCurrent conversation:{chat_history}{texto}<|end|>\n<|assistant|>\n"
+
+
 # The pipe operator (|) in Python is OR, but LangChain "overloads" the pipe operator to work like a Unix pipe
-template = "<|endoftext|><|user|>\n{texto}<|end|>\n<|assistant|>\n"
-prompt = PromptTemplate(template=template, input_variables=["texto"])
+prompt = PromptTemplate(template=template, input_variables=["texto", "chat_history"])
 chain = prompt | model
 
 
@@ -41,19 +46,9 @@ question = "Hi! My name is Carlos. What is 1 + 1? What's my name?"
 console.print(f"\n--- Sending Prompt with chain ---", style="gold1")
 print(question)
     
-response = chain.invoke({"texto": question,})
+response = chain.invoke({"texto": question, "chat_history": ""})
 console.print(f"\n--- Response ---", style="gold1")
 print(response)
-
-# Nueva inferencia local en GPU. Entre la pregunta anterior y esta no hay contexto común.
-question = "What is my name?"
-console.print(f"\n--- Sending Prompt with chain ---", style="gold1")
-print(question)
-    
-response = chain.invoke({"texto": question,})
-console.print(f"\n--- Response ---", style="gold1")
-print(response)
-
 
 
 del chain
