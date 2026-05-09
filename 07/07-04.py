@@ -1,15 +1,20 @@
 # Memory - Helping LLMs to remember conversations
 
 # Kaiseraugst, 07/May/2026
-# Engine: LlamaCpp hosting Phi-3-mini 
+# Engine: LlamaCpp
+# Model: Microsoft Phi-3-mini version fp16 (full precision) 3.8B (Billion) Parameters, 8 GB VRAM. Text-only, not multimodal.
 # Bridge: llama-cpp-python (library langchain_community)
 # Orchestrator: LangChain (library langchain-core) - Chain with Multiple Prompts
 
 from rich.console import Console
 from langchain_community.llms import LlamaCpp
-from langchain_core.prompts import PromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder # ChatPromptTemplate en vez de PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough
+
+from langchain_core.chat_history import InMemoryChatMessageHistory
+from langchain_core.runnables.history import RunnableWithMessageHistory # RunnableWithMessageHistory en vez de RunnablePassthrough
+
+# from langchain.memory import ConversationBufferMemory que es lo que indica el libro, está "deprecated"
 
 chat_history = ""
 
@@ -30,23 +35,29 @@ model = LlamaCpp(
     verbose=False
 )
 
+# Pause 0
+# print()
+# key = input("Press ENTER to exit.")
 
-# Define the chain
+# ---------- Define the chain -----------
+
 # Create an updated prompt template to include a chat history
-template = "<|endoftext|><|user|>\nCurrent conversation:{chat_history}{texto}<|end|>\n<|assistant|>\n"
+template = "<|endoftext|><|user|>\nCurrent conversation:{key_chat_history}{key_question}<|end|>\n<|assistant|>\n"
 
+# Create the prompt object
+prompt = ChatPromptTemplate.from_template(template)
 
+# Create the chain
 # The pipe operator (|) in Python is OR, but LangChain "overloads" the pipe operator to work like a Unix pipe
-prompt = PromptTemplate(template=template, input_variables=["texto", "chat_history"])
 chain = prompt | model
 
 
-# Inferencia local en GPU. 
+# -----------Inferencia local en GPU. ----------------
 question = "Hi! My name is Carlos. What is 1 + 1? What's my name?"
 console.print(f"\n--- Sending Prompt with chain ---", style="gold1")
 print(question)
     
-response = chain.invoke({"texto": question, "chat_history": ""})
+response = chain.invoke({"key_question": question, "key_chat_history": ""})
 console.print(f"\n--- Response ---", style="gold1")
 print(response)
 
