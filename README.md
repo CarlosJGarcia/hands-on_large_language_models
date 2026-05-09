@@ -37,27 +37,38 @@ pip install langchain-community \
 Para que la librería use la GPU, es necesario compilarla en local, a partir del código fuente, usando el CUDA toolkit (CUDA Compute Platform) 
 
 **Llama, llama.cpp y ollama** \
-ollama está desarrollado usando la librería llama.cpp \
-llama.cpp se desarrolló para permitir cargar y usar el modelo Llama de Meta en portátiles con CPU o CPU+GPU. Anteriormente Llama solo funcionaba usando PyTorch en servidores \
-llama.cpp es la librería core en C/C++ para cargar y usar LLMs. llama-cpp-python es un wrapper de mas alto nivel en python.
-Por este motivo, se descarga llama-cpp-python con PIP, se compila el código llama.cpp usando el CUDA toolkit y ya se puede usar la libraria python
-Actualmente, tanto llama.cpp como ollama permiten usar cualquier LLM, no solo Llama, sino también Gemma, Mistral, etc. 
+ollama está desarrollado usando la librería llama.cpp
+- Es una aplicación de línea de comandos (sin GUI) para Linux, MacOS o Windows
+- Para interactuar mediante chat con el modelo en ollama se usa Open WebUI, AnythingLLM o alguna extensión de navegador
 
+LM Studio es una alternativa a ollama, también basado en llama.cpp
+- ollama se usa mas en servidores y workstations, al ser por línea de comandos
+- LM Studio se usa más como aplicación y herramienta interactiva, al ser un GUI
 
+llama.cpp:
+- Es una librería en C/C++ para cargar y usar LLMs.
+- Los modelos (LLM) deben estar en formato GGUF (GPT-Generated Unified Format)
+- Se desarrolló para permitir cargar y usar el modelo Llama de Meta en portátiles con CPU o CPU+GPU. Anteriormente Llama solo funcionaba usando PyTorch en servidores
+- Actualmente, tanto llama.cpp como ollama permiten usar cualquier LLM, no solo Llama, sino también Gemma, Mistral, etc.
+
+llama-cpp-python
+- Es una librería wrapper de llama.cpp de mas alto nivel, para python. 
+- Por este motivo, para usar llama.cpp desde Python, el proceso de instalación de llama-cpp-python es el siguiente:
+   1. Se descarga llama-cpp-python con PIP
+   2. A continuación PIP, compila el código llama.cpp
+
+       Opción A: Compilación usando el CUDA toolkit, que incluye el compilador nvcc -> llama-cpp-python para GPU 
+
+       Opción B: Compilación con (gcc Linux, clang MacOS o cl.exe Windows) -> llama-cpp-python para CPU
+   3. Ya se puede usar la libraria python
+
+\
 **Importante:** \
-La instalación de transformers la hago con PIP ya que la versión que instala conda es muy antigua (v4) y no puede acceder a los modelos del libro (v5)
+La instalación de Transformers la hago con PIP ya que la versión que instala conda es muy antigua (Transformers v4) y no puede acceder a los modelos del libro (Transformers v5)
 
 Con la instalación de bitsandbytes ocurre lo mismo, la hago con PIP ya que la versión que instala conda es antigua. Además la instalo con el parámetro --upgrade para que pip use la versión más moderna que es la que funciona bien con los drivers CUDA v13.0 que son los actuales en 2026. 
 
-No hacer $ conda update --all -c conda-forge -y porque instala una versión de PyTorch sin CUDA
+No hacer `$ conda update --all -c conda-forge -y` porque instala una versión de PyTorch sin CUDA
 
 Para comprobar las versiones de librerías y que está funcionando CUDA en PyTorch ejecutar `version.py` \
 Para monitorizar el uso de la GPU usar `./monitor.sh` en una ventana de Terminal
-
-
-| GPU Category | Model | Key Advantage for AI |
-| :--- | :--- | :--- |
-| **Enthusiast / Prosumer** | **RTX 3090 24GB** | Gold standard for local development in 2022-2023.|
-| **Enthusiast / Prosumer** | **RTX 4090 24GB** | Gold standard for local development in 2023-2025. Large LLM fine-tuning and prototyping before moving to enterprise hardware. |
-| **New Professional Standard** | **RTX 5090 32GB** | Current top-tier consumer and data scientist choice in 2026, offering more VRAM and significant performance gains. |
-| **Budget / Student** | **RTX 3060 12GB / 5060 Ti 16GB** | Remain popular in 2026 due to their VRAM-to-price ratio, allowing students and hobbyists to run LLM inference and small-scale training projects locally without a massive investment. These two together are the equivalent of a RTX 4090 with 24 GB.|

@@ -10,28 +10,13 @@
 | 4. Text classification | Completed | 19/Apr/2026 | - |
 | 5. Text clustering and topic modeling | Started | - | Library issues |
 | 6. Prompt engineering | Completed | 24/Apr/2026 | - |
-| 7. Advanced text generation techniques and tools | Not stated | - | - |
+| 7. Advanced text generation techniques and tools | Ongoing | - | - |
 | 8. Semantic Search and Retrieval - Augmented Generation| Not started | - | - |
 | 9. Multimodal Large Language Models | Not started | - | - |
 | *Section 3 - Training and Fine-Tuning Language Models* |
 | 10. Creating Text Embedding Models | Completed | 27/Apr/2026 | - |
 | 11. Fine-Tuning Representation Models for Classification | Not started | | - |
 | 12. Fine-Tuning Generation Models | Completed | 28/Apr/2026 | - |
-
-
----
-
-### Notes
-- Frontier model: Los modelos 'tope de gama' que se ejecutan en un datacenter y a los que se accede mediante un API a través de Internet (Gemini, Claude, ChatGPT)
-
-- Edge model: Los modelos compactos pensados para ejecutarse localmente en un smartphone o en un ordenador, incluso con hardware dedicado (RTX 3060 12 GB, RTX 5060 16 GB, etc.)
-
-| | Representational Models | Embedding Models | Generative Models |
-|---------|------------------|----------------|-------|
-| Primary Goal | Son modelos no-generativos. Son modelos "decodificadores". Transforman los datos de entrada (imágenes, texto, audio, etc.) en un tensor numérico. A partir de ese tensor podemos clasificar los datos (análisis de sentimientos, búsquedas en documentos, spam / no-spam). | Mapean los datos a puntos en el espacio basados en parecidos. Permiten agrupar los datos (por ejemplo las palabras "rey" y "reina") por múltiples criterios | Generan una salida basándose en patrones aprendidos. Son modelos diseñados para crear contenido nuevo a partir de una instrucción (prompt). Entienden el sentido de un texto (necesario para 'entender' el prompt) y predicen la continuación más probable, para generar respuestas, código, resúmenes o traducciones |
-| Output | Características del input |Vector numérico de longitud fija | Token, imagen, vídieo |
-| Philosophy | ¿Que es esto? | ¿Donde encaja esto? | ¿Qué viene a continuación? |
-| Example | BERT | Word2Vec | GPT-4 |
 
 
 ### Librerías
