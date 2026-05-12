@@ -16,8 +16,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory # Runnab
 
 # from langchain.memory import ConversationBufferMemory que es lo que indica el libro, está "deprecated"
 
-chat_history = ""
-
+history = ""
 console = Console()
 
 # Modelo: Microsoft Phi-3-mini, version fp16 (full precision) 3.8B parameters, 8 GB VRAM.
@@ -35,14 +34,10 @@ model = LlamaCpp(
     verbose=False
 )
 
-# Pause 0
-# print()
-# key = input("Press ENTER to exit.")
-
 # ---------- Define the chain -----------
 
 # Create an updated prompt template to include a chat history
-template = "<|endoftext|><|user|>\nCurrent conversation:{key_chat_history}{key_question}<|end|>\n<|assistant|>\n"
+template = "<|endoftext|><|user|>\nCurrent conversation:{key_history}{key_question}<|end|>\n<|assistant|>\n"
 
 # Create the prompt object
 prompt = ChatPromptTemplate.from_template(template)
@@ -57,7 +52,7 @@ question = "Hi! My name is Carlos. What is 1 + 1? What's my name?"
 console.print(f"\n--- Sending Prompt with chain ---", style="gold1")
 print(question)
     
-response = chain.invoke({"key_question": question, "key_chat_history": ""})
+response = chain.invoke({"key_history": history, "key_question": question})
 console.print(f"\n--- Response ---", style="gold1")
 print(response)
 
