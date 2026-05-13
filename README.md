@@ -36,10 +36,11 @@ pip install langchain-community \
 **Sobre la instalación de llama-cpp-python con soporte CUDA** \
 Para que la librería use la GPU, es necesario compilarla en local, a partir del código fuente, usando el CUDA toolkit (CUDA Compute Platform) 
 
-**Llama, llama.cpp y ollama** \
+**Llama, llama.cpp, LlamaCpp  y ollama** \
 ollama está desarrollado usando la librería llama.cpp
 - Es una aplicación de línea de comandos (sin GUI) para Linux, MacOS o Windows
-- Para interactuar mediante chat con el modelo en ollama se usa Open WebUI, AnythingLLM o alguna extensión de navegador
+- Permite cargar un modelo e interactuar mediante chat de texto
+- Para interactuar mediante web chat con el modelo en ollama se usa Open WebUI, AnythingLLM o alguna extensión de navegador
 
 LM Studio es una alternativa a ollama, también basado en llama.cpp
 - ollama se usa mas en servidores y workstations, al ser por línea de comandos
@@ -61,6 +62,14 @@ llama-cpp-python
 
        Opción B: Compilación con (gcc Linux, clang MacOS o cl.exe Windows) -> llama-cpp-python para CPU
    3. Ya se puede usar la libraria python
+
+LlamaCpp:
+- Es posible descargar directamente desde GitHub el repositorio llama.cpp de Georgi Gerganov y ejecutarlo.
+- Incluye su propio servidor web llamado llama-server.
+- La gente lo usa porque, cuando sale un nuevo modelo, LlamaCpp lo soporta en cuestión de horas, mientras que a ollama le cuesta un par de semanas
+- Ollama es más user-friendly y LlamaCpp es de más bajo nivel, lo que permite ver y controlar todos los parámetros del modelo
+
+
 
 \
 **Importante:** \
