@@ -1,4 +1,10 @@
-# Loads the HLE (Humanity Last Exam) dataset from Hugging Face.
+# Dataset: HLE (Humanity Last Exam) from Hugging Face.
+# Model  : Microsoft Phi-3-mini, version fp16 (full precision) 3.8B (billion) parameters, 8 GB VRAM. Text-only, no multimodal. Requires prompt template.
+# Librerías: datasets de Hugging Face
+#            LangChain (que no es de Hugging Face), que a su vez usa:
+#                   - llama-cpp-python para cargar el modelo en la GPU/VRAM a partir de un fichero GGUF (GPT Generated Unified Format)
+#                   - PromptTemplate       
+
 # Reinach 13/May/2026z
 
 from rich.console import Console
@@ -14,72 +20,87 @@ SPLIT = "test"              # El único 'split'. Contiene 2.500 preguntas, algun
 # Modelo: Microsoft Phi-3-mini, version fp16 (full precision) 3.8B (billion) parameters, 8 GB VRAM. Text-only, no multimodal. Requires prompt template.
 MODEL_PATH = "../models/Phi-3-mini-4k-instruct-fp16.gguf"
 
-# El valor por defecto es 4096 y si lo superamos da un warning, pero evita que el programa se cuelgue en la pregunta 78 que supera los 4096 tokens
+# Context window. Contiene la pregunta y la respuesta generada. Si se supera el tamaño asignado, la inferencia falla y el programa se interrumpe
+# El valor por defecto de Phi-3-mini es 4096. Si asignamos más, da un warning, pero evita que el programa se interrumpa en la pregunta 78 que supera los 4096 tokens
+# El hecho de tener que duplicar el tamaño de la ventana de contexto por defecto ya indica que las preguntas tienen una complejidad superior a la capacidad del modelo
+
+# 4096 (4K) y 8129 (8 K) son tokens. Si 1 palabra = 0'75 token, 8.192 tokens = 6.144 palabras (12 - 15 páginas de texto)
+# En precisión FP16 (2 Bytes cada valor), 8.192 tokens ocupan 768 MB
 CONTEXT_WINDOW_SIZE = 8192
 
-print(f"\nLoading dataset '{DATASET_ID}', split='{SPLIT}'...")
-        
-# El método load_dataset usa "Apache Arrow" así que en realidad los 6M artículos y 16 GB de datos del dataset no están cargados en RAM, aunque python piensa que sí
-dataset = load_dataset(DATASET_ID, split=SPLIT)
+# Uso de VRAM RTX 3060
+# Capacidad          12000 MB 100%
+# Modelo Phi-3 FP16   7000 MB  60%
+# Context 8129 token.  768 MB   6%
+# CUDA Overhead       2300 MB  20%
+# Libre               1800 MB  15%
 
 console = Console()
-console.print(f"Dataset loaded successfully!\n", style="gold1")
-print(f"Dataset structure: {dataset}")
-print(f"Number of rows: {len(dataset)}")
-#print(f"Train dataset size: {dataset['num_rows'].data.nbytes/(1024*1024):.2f} MB\n")
+console.print(f"\nDataset", style="gold1")
+print(f"Loading dataset '{DATASET_ID}', split='{SPLIT}'...")
+        
+# El método load_dataset usa "Apache Arrow" así que en realidad las 2.500 preguntas/respuestas del dataset no están cargados en RAM, aunque python piensa que sí
+dataset = load_dataset(DATASET_ID, split=SPLIT)
+
+print(f"- Dataset structure: {dataset}")
+print(f"- Number of rows: {len(dataset)}")
 
 
 # Cargando el modelo en la GPU a partir del fichero GGUF
-console.print(f"Llama-cpp-python", style="gold1")
+console.print(f"\nLangChain & Llama-cpp-python", style="gold1")
 print(f"Loading model {MODEL_PATH} in the GPU")
 model = LlamaCpp(model_path=MODEL_PATH, n_gpu_layers=-1, max_tokens=1024, n_ctx=CONTEXT_WINDOW_SIZE, seed=42, verbose=False)
+print()
 
-
-# Método "automático". Define the chain
+# Método "automático" de enviar prompts usando template y de recoger la respuesta. Define the chain.
 # The pipe operator (|) in Python is OR, but LangChain "overloads" the pipe operator to work like a Unix pipe
 template = "<|endoftext|><|user|>\n{texto}<|end|>\n<|assistant|>\n"
 prompt = PromptTemplate(template=template, input_variables=["texto"])
 chain = prompt | model
 
-
 # Define the empty list
 m = 0
 lista = []
-for n in range(0, len(dataset)):
-# for n in range(0, 3):
+correct_count = 0
+
+# Bucle principal para recorrer el dataset
+# for n in range(0, len(dataset)):
+for n in range(0, 500):
 
     row = dataset[n]
 
     id_val = row['id']
     question_val = row['question']
     image_val = row['image']
+    true_answer_val = str(row['answer'])    # La respuesta correcta según el dataset
 
+    # Check if the row (question) is text-only if yes, I ask it to the model, otherwise I ignore it as Phi-3 is text-based
     if image_val == "":
-        # Row is text-only
-
+        
         # Inferencia
         prompt = "<|endoftext|><|user|>\n" + question_val + "<|end|>\n<|assistant|>\n"
         response = model.invoke(prompt)
 
-        # Añado pregunta y respuesta a mi lista
-        new_row = {"id": m, "question": question_val, "answer": response}
-        lista.append(new_row)
-        m = m+1    
+        # Evaluación de la respueta por inferencia vs respuesta verdadera
+        correct = true_answer_val.lower().strip() in response.lower()
+        if correct:
+            correct_count += 1
 
-        print(f"Question {m}/{len(dataset)}")
+        # Guardo la pregunta y la respuesta en mi lista
+        new_row = {"id": m, "question": question_val, "answer": response, "correct": correct}
+        lista.append(new_row)
+        print(f"Question {m}/{len(dataset)} completed.")
+        m += 1    
+
+        
     
+# Una vez terminada la sesión de preguntas/respuestas muestra el resultado
 for n in range(0, len(lista)):
     print(lista[n])
 
+print (f"Número de respuestas acertadas: {correct_count}")
 
-# Inspecting the first item in the 'train' split
-"""
-console.print(f"Sample data:", style="gold1")
-sample = dataset['train'][0] 
-for key, value in sample.items():
-    content_preview = str(value)[:200].replace('\n', ' ')
-    print(f"{key}: {content_preview}...")
-"""
+# Pause 0
 print()
 key = input("Press ENTER to exit.")
 
@@ -87,3 +108,10 @@ key = input("Press ENTER to exit.")
 del chain  # As basic_chain contains model
 del model
 print()
+
+# Analizando el resultado de las primeras 50 preguntas/respuestas con Gemini Pro, el 100% de las respuestas de Phi-3 son incorrectas
+# The dataset HLE is not a standard AI benchmark. Was created specifically to be the hardest test in the world.
+# You essentially put a brilliant middle-school student into a PhD-level theoretical physics defense and stretched his brain to the breaking point.
+# Small models (3.8 B) like Phi-3 are highly optimized for tasks like summarizing emails, writing basic Python scripts or acting as a simple conversational agent.
+# When a small model encounters a concept it doesn't understand (like computing the Poincaré polynomial of a Lie algebra), it doesn't know how to say "I don't know." 
+# Instead, it uses its excellent language skills to confidently string together advanced-sounding words that mathematically mean absolutely nothing (hallucination)
