@@ -27,6 +27,8 @@ pip install peft \
 pip install trl \
 pip install langchain \
 pip install langchain-community \
+pip install nvitop \
+
 
 **No hacer esto ya que rompe todo el entorno -->** conda install umap-learn -c conda-forge \
 **En todo caso, probar esto  -->** pip install umap-learn   
