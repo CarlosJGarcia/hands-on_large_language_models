@@ -15,7 +15,7 @@ from langchain_core.prompts import PromptTemplate
 
 # Dataset HLE
 DATASET_ID = "cais/hle"
-SPLIT = "test"              # El único 'split'. Contiene 2.500 preguntas, algunas con imágenes
+SPLIT = "test"              # El único 'split'. Contiene 2.500 preguntas, algunas con imágenes. Indica que este es un dataset de test, no de training ni de validación
 
 # Modelo: Microsoft Phi-3-mini, version fp16 (full precision) 3.8B (billion) parameters, 8 GB VRAM. Text-only, no multimodal. Requires prompt template.
 MODEL_PATH = "../models/Phi-3-mini-4k-instruct-fp16.gguf"
@@ -62,10 +62,11 @@ chain = prompt | model
 m = 0
 lista = []
 correct_count = 0
+LIMIT = len(dataset)
+#LIMIT = 10            # Versión reducida para pruebas
 
 # Bucle principal para recorrer el dataset
-# for n in range(0, len(dataset)):
-for n in range(0, 500):
+for n in range(0, LIMIT):
 
     row = dataset[n]
 
@@ -89,7 +90,7 @@ for n in range(0, 500):
         # Guardo la pregunta y la respuesta en mi lista
         new_row = {"id": m, "question": question_val, "answer": response, "correct": correct}
         lista.append(new_row)
-        print(f"Question {m}/{len(dataset)} completed.")
+        print(f"Question {m}/{LIMIT} completed.")
         m += 1    
 
         
@@ -98,7 +99,9 @@ for n in range(0, 500):
 for n in range(0, len(lista)):
     print(lista[n])
 
-print (f"Número de respuestas acertadas: {correct_count}")
+print (f"\nNúmero de respuestas acertadas: {correct_count}")
+correct_percent = correct_count / LIMIT * 100
+print (f"Porcentaje de respuestas acertadas: {correct_percent:.0f}%")
 
 # Pause 0
 print()
