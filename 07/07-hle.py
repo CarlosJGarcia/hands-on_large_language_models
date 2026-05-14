@@ -26,7 +26,7 @@ MODEL_PATH = "../models/Phi-3-mini-4k-instruct-fp16.gguf"
 
 # 4096 (4K) y 8129 (8 K) son tokens. Si 1 palabra = 0'75 token, 8.192 tokens = 6.144 palabras (12 - 15 páginas de texto)
 # En precisión FP16 (2 Bytes cada valor), 8.192 tokens ocupan 768 MB
-CONTEXT_WINDOW_SIZE = 8192
+CONTEXT_WINDOW_SIZE = 12032
 
 # Uso de VRAM RTX 3060
 # Capacidad          12000 MB 100%
