@@ -1,6 +1,6 @@
 # Dataset: HLE (Humanity Last Exam) from Hugging Face.
 # Model  : Microsoft Phi-3-mini, version fp16 (full precision) 3.8B (billion) parameters, 8 GB VRAM. Text-only, no multimodal. Requires prompt template.
-# Librerías: datasets de Hugging Face
+# Librerías: datasets, Hugging Face
 #            LangChain (que no es de Hugging Face), que a su vez usa:
 #                   - llama-cpp-python para cargar el modelo en la GPU/VRAM a partir de un fichero GGUF (GPT Generated Unified Format)
 #                   - PromptTemplate       
@@ -21,19 +21,24 @@ SPLIT = "test"              # El único 'split'. Contiene 2.500 preguntas, algun
 MODEL_PATH = "../models/Phi-3-mini-4k-instruct-fp16.gguf"
 
 # Context window. Contiene la pregunta y la respuesta generada. Si se supera el tamaño asignado, la inferencia falla y el programa se interrumpe
-# El valor por defecto de Phi-3-mini es 4096. Si asignamos más, da un warning, pero evita que el programa se interrumpa en la pregunta 78 que supera los 4096 tokens
-# El hecho de tener que duplicar el tamaño de la ventana de contexto por defecto ya indica que las preguntas tienen una complejidad superior a la capacidad del modelo
+# El valor por defecto de Phi-3-mini es 4096. Si asignamos más, da un warning, pero evita que el programa se interrumpa en las preguntas que superan los 4096 tokens
+# El hecho de tener que triplicar el tamaño de la ventana de contexto por defecto indica que las preguntas tienen una complejidad muy superior a la capacidad del modelo
 
-# 4096 (4K) y 8129 (8 K) son tokens. Si 1 palabra = 0'75 token, 8.192 tokens = 6.144 palabras (12 - 15 páginas de texto)
+# 4096 (4K), 8129 (8 K) y 12.288 (12 K) son tokens. 
+# Si 1 palabra = 0'75 token, 8.192 tokens = 6.144 palabras (12 - 15 páginas de texto)
 # En precisión FP16 (2 Bytes cada valor), 8.192 tokens ocupan 768 MB
-CONTEXT_WINDOW_SIZE = 12032
+# En precisión FP16 (2 Bytes cada valor), 12.288 tokens ocupan 1.152 MB
+
+# CONTEXT_WINDOW_SIZE = 12032     # Limite de memoria de contexto para cargar el Phi-3-mini en la RTX 3060 12 GB
+CONTEXT_WINDOW_SIZE = 12288       # Requiere 16GB VRAM
 
 # Uso de VRAM RTX 3060
 # Capacidad          12000 MB 100%
-# Modelo Phi-3 FP16   7000 MB  60%
-# Context 8129 token.  768 MB   6%
-# CUDA Overhead       2300 MB  20%
-# Libre               1800 MB  15%
+# Modelo Phi-3 FP16   7600 MB  62%
+# Context 12032 token 1152 MB   9%
+# CUDA Overhead       2300 MB  19%
+# Libre               1200 MB  10%
+# El siguiente nivel de ampliación de la ventana de contexto son 12288 tokens, que ya no caben en la targeta de 12 GB
 
 console = Console()
 console.print(f"\nDataset", style="gold1")
