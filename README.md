@@ -11,8 +11,6 @@ pip install datasets \
 pip install zstandard lz4 \
 pip install sentence-transformers \
 pip install openai \
-pip install cohere
-
 
 **Instalación de llama-cpp-python con soporte CUDA** \
 sudo apt update \
@@ -30,6 +28,10 @@ pip install trl \
 pip install langchain \
 pip install langchain-community \
 pip install nvitop \
+pip install cohere \
+pip install faiss-cpu \
+pip install rank_bm25
+
 
 
 **No hacer esto ya que rompe todo el entorno -->** conda install umap-learn -c conda-forge \

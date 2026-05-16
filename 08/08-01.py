@@ -1,8 +1,13 @@
 import os
+import faiss
 import cohere
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+
+from rank_bm25 import BM25Okapi
+from sklearn.feature_extraction import _stop_words
+import string
 
 # Retrieve the API key from the environment variable
 api_key = os.getenv('COHERE_API_KEY')
@@ -44,4 +49,87 @@ response = co.embed(
 
 embeds = np.array(response)
 print(embeds.shape)
+
+
+dim = embeds.shape[1]
+index = faiss.IndexFlatL2(dim)
+print(index.is_trained)
+index.add(np.float32(embeds))
+
+
+def search(query, number_of_results=3):
+  
+  # 1. Get the query's embedding
+  query_embed = co.embed(texts=[query], model="embed-english-v3.0",
+                input_type="search_query",).embeddings[0]
+
+  # 2. Retrieve the nearest neighbors
+  distances , similar_item_ids = index.search(np.float32([query_embed]), number_of_results) 
+
+  # 3. Format the results
+  texts_np = np.array(texts) # Convert texts list to numpy for easier indexing
+  results = pd.DataFrame(data={'texts': texts_np[similar_item_ids[0]], 
+                              'distance': distances[0]})
+  
+  # 4. Print and return the results
+  print(f"Query:'{query}'\nNearest neighbors:")
+  return results
+
+query = "how precise was the science"
+results = search(query)
+print(results)
+
+
+
+def bm25_tokenizer(text):
+    tokenized_doc = []
+    for token in text.lower().split():
+        token = token.strip(string.punctuation)
+
+        if len(token) > 0 and token not in _stop_words.ENGLISH_STOP_WORDS:
+            tokenized_doc.append(token)
+    return tokenized_doc
+
+
+tokenized_corpus = []
+for passage in tqdm(texts):
+    tokenized_corpus.append(bm25_tokenizer(passage))
+
+bm25 = BM25Okapi(tokenized_corpus)
+
+def keyword_search(query, top_k=3, num_candidates=15):
+    print("Input question:", query)
+
+    ##### BM25 search (lexical search) #####
+    bm25_scores = bm25.get_scores(bm25_tokenizer(query))
+    top_n = np.argpartition(bm25_scores, -num_candidates)[-num_candidates:]
+    bm25_hits = [{'corpus_id': idx, 'score': bm25_scores[idx]} for idx in top_n]
+    bm25_hits = sorted(bm25_hits, key=lambda x: x['score'], reverse=True)
+    
+    print(f"Top-3 lexical search (BM25) hits")
+    for hit in bm25_hits[0:top_k]:
+        print("\t{:.3f}\t{}".format(hit['score'], texts[hit['corpus_id']].replace("\n", " ")))
+
+keyword_search(query = "how precise was the science")
+
+
+# ==========================================
+# PART 3: RERANKING
+# ==========================================
+
+print(f"\n--- RERANKING ---")
+print(f"Query: '{query}'")
+
+# Use Cohere's Rerank API to re-evaluate the relevance of the documents
+rerank_results = co.rerank(
+    query=query, 
+    documents=texts, # In a huge dataset, you would pass the BM25/FAISS results here instead of all texts
+    model="rerank-english-v3.0", # Specify the current model!
+    top_n=3, 
+    return_documents=True
+)
+
+print(f"Top-3 Reranked hits:")
+for idx, hit in enumerate(rerank_results.results):
+    print(f"\tRank {idx+1} (Score: {hit.relevance_score:.3f}): {hit.document.text}")
 
