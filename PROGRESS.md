@@ -11,7 +11,7 @@
 | 5. Text clustering and topic modeling | Started | - | Library issues |
 | 6. Prompt engineering | Completed | 24/Apr/2026 | - |
 | 7. Advanced text generation techniques and tools | Ongoing | - | - |
-| 8. Semantic Search and Retrieval - Augmented Generation| Not started | - | - |
+| 8. Semantic Search and Retrieval - Augmented Generation| Started | - | - |
 | 9. Multimodal Large Language Models | Not started | - | - |
 | *Section 3 - Training and Fine-Tuning Language Models* |
 | 10. Creating Text Embedding Models | Completed | 27/Apr/2026 | - |
