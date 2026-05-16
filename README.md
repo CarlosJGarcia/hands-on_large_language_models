@@ -10,7 +10,9 @@ pip install --upgrade bitsandbytes \
 pip install datasets \
 pip install zstandard lz4 \
 pip install sentence-transformers \
-pip install openai
+pip install openai \
+pip install cohere
+
 
 **Instalación de llama-cpp-python con soporte CUDA** \
 sudo apt update \
