@@ -1,0 +1,1 @@
+# Modificación de 12-01.py para usar LoRA en vez de QLoRA
