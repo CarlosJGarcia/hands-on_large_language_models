@@ -5,7 +5,7 @@
 #                   - llama-cpp-python para cargar el modelo en la GPU/VRAM a partir de un fichero GGUF (GPT Generated Unified Format)
 #                   - PromptTemplate       
 
-# Reinach 13/May/2026z
+# Reinach 13/May/2026
 
 from rich.console import Console
 from datasets import load_dataset

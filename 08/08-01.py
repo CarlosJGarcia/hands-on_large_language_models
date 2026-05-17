@@ -133,3 +133,66 @@ print(f"Top-3 Reranked hits:")
 for idx, hit in enumerate(rerank_results.results):
     print(f"\tRank {idx+1} (Score: {hit.relevance_score:.3f}): {hit.document.text}")
 
+# ==========================================
+# PART 4: TWO-STAGE PIPELINE (BM25 + RERANK)
+# ==========================================
+
+def keyword_and_reranking_search(query, top_k=3, num_candidates=10):
+    print("\n--- TWO STAGE SEARCH: BM25 + RERANK ---")
+    print("Input question:", query)
+    
+    ##### BM25 search (lexical search) #####
+    bm25_scores = bm25.get_scores(bm25_tokenizer(query))
+    top_n = np.argpartition(bm25_scores, -num_candidates)[-num_candidates:]
+    bm25_hits = [{'corpus_id': idx, 'score': bm25_scores[idx]} for idx in top_n]
+    bm25_hits = sorted(bm25_hits, key=lambda x: x['score'], reverse=True)
+    
+    print(f"\nTop-{top_k} lexical search (BM25) hits:")
+    for hit in bm25_hits[0:top_k]:
+        print("\t{:.3f}\t{}".format(hit['score'], texts[hit['corpus_id']].replace("\n", " ")))
+    
+    # Add re-ranking
+    docs = [texts[hit['corpus_id']] for hit in bm25_hits]
+    
+    print(f"\nTop-{top_k} hits by rank-API ({len(bm25_hits)} BM25 hits re-ranked):")
+    
+    # ADDED THE MODEL PARAMETER HERE:
+    results = co.rerank(
+        query=query, 
+        documents=docs, 
+        model="rerank-english-v3.0", 
+        top_n=top_k, 
+        return_documents=True
+    )
+    
+    for hit in results.results:
+        print("\t{:.3f}\t{}".format(hit.relevance_score, hit.document.text.replace("\n", " ")))
+
+# Call the function so it actually runs when you execute the script!
+keyword_and_reranking_search(query="how precise was the science")
+
+# ==========================================
+# PART 5: GROUNDED GENERATION (RAG)
+# ==========================================
+
+print("\n--- GROUNDED GENERATION (RAG) ---")
+query = "income generated"
+
+# 1- Retrieval
+# We'll use embedding search. But ideally we'd do hybrid
+print(f"Searching for: '{query}'...")
+results = search(query)
+
+# 2- Grounded Generation
+# Format the retrieved texts into a dictionary format Cohere expects
+docs_dict = [{'text': text} for text in results['texts']]
+
+# Pass the query and the retrieved documents to the chat model
+response = co.chat(
+    message=query,
+    documents=docs_dict,
+    model="command-a-03-2025" # ADDED THE MODEL PARAMETER HERE!
+)
+
+print("\nFinal AI Answer:")
+print(response.text)
