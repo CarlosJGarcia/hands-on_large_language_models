@@ -1,3 +1,15 @@
+# Standard generation (no RAG)
+# All the concepts, vocabulary, and reasoning capabilities are already baked into my neural network's weights. 
+# I don't need to look anything up; I just predict the best sequence of words to answer you.
+
+# RAG (Retrieval-Augmented Generation
+# When you ask me something that requires real-time data, highly specific external facts, or when I need to read something you provide.
+# If you ask me for the latest news, the current weather, or the specs of a brand-new GPU (like the RTX 5090), my pre-trained weights aren't enough. 
+# I actively use Google Search as my "retriever." I pull the most up-to-date web snippets and inject them into my context window to generate an accurate, grounded response.
+
+# Document Analysis: If you upload a PDF or a text file and ask me questions about it, I use retrieval techniques to scan and pull the relevant chunks from your document so I can answer questions specifically about that text.
+
+
 from rich.console import Console
 from langchain_community.llms import LlamaCpp
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -5,6 +17,8 @@ from langchain_community.vectorstores import FAISS
 
 from langchain_core.prompts import PromptTemplate
 
+from langchain_classic.chains import create_retrieval_chain
+from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 
 text = """
 Interstellar is a 2014 epic science fiction film co-written, directed, and produced by Christopher Nolan. 
@@ -58,30 +72,53 @@ Relevant information:
 {context}
 
 Provide a concise answer the following question using the relevant information provided above:
-{question}<|end|>
+{input}<|end|>
 <|assistant|>"""
 prompt = PromptTemplate(
     template=template,
-    input_variables=["context", "question"]
+    input_variables=["context", "input"]
 )
 
-
-
-"""
 # RAG pipeline
-rag = RetrievalQA.from_chain_type(
-    llm=llm,
-    chain_type='stuff',
-    retriever=db.as_retriever(),
-    chain_type_kwargs={
-        "prompt": prompt
-    },
-    verbose=True
-)
-"""
+# Create a chain that "stuffs" the retrieved documents into the prompt
+document_chain = create_stuff_documents_chain(model, prompt)
+
+# Combine the document chain with the retriever to build the final RAG pipeline
+rag = create_retrieval_chain(db.as_retriever(), document_chain)
+
+
+
+# =======================================================
+# THE SEARCH BLOCK
+# =======================================================
+console.print("\nThinking...", style="gold1")
+
+# Define the question
+query = "how precise was the science in the movie?"
+
+# Ask the AI!
+response = rag.invoke({"input": query})
+
+#console.print("\n--- Final Answer ---", style="bold cyan")
+print(response["answer"])
+
+
+#=======================================================
+# Second search
+# =======================================================
+console.print("\nThinking...", style="gold1")
+response = rag.invoke({"input": "Income generated"})
+#console.print("\n--- Final Answer ---", style="bold cyan")
+print(response["answer"])
+
+
+
+
 
 
 # Libero recursos manualmente. Si no, la librería muestra un warning al cerrar; Exception ignored in: <function Llama.__del__ at 0x7f99fb00a700> error when exiting the python script
+del rag
 del model
+del document_chain
 print()
 
