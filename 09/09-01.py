@@ -1,34 +1,40 @@
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
-
+from rich.console import Console
 
 from PIL import Image
 from urllib.request import urlopen
 from transformers import CLIPTokenizerFast, CLIPProcessor, CLIPModel
 
+# Modelo: OpenAI CLIP. Es un modelo multimodal, para uso académico sobre visión artificial. Es multimodal
 MODEL_ID = "openai/clip-vit-base-patch32"
 
 # Load an AI-generated image of a puppy playing in the snow
+console = Console()
+console.print(f"\nCargando imagen", style="gold1")
 puppy_path = "https://raw.githubusercontent.com/HandsOnLLM/Hands-On-Large-Language-Models/main/chapter09/images/puppy.png"
 image = Image.open(urlopen(puppy_path)).convert("RGB")
 
 caption = "a puppy playing in the snow"
-print(caption)
+print(f"Caption: {caption}")
 
 
 # Load a tokenizer to preprocess the text
+console.print(f"\nCargando tokenizer", style="gold1")
 clip_tokenizer = CLIPTokenizerFast.from_pretrained(MODEL_ID)
 
 # Load a processor to preprocess the images
+console.print(f"\nCargando image processor", style="gold1")
 clip_processor = CLIPProcessor.from_pretrained(MODEL_ID)
 
 # Main model for generating text and image embeddings
+console.print(f"\nCargando el modelo (en CPU)", style="gold1")
 model = CLIPModel.from_pretrained(MODEL_ID, use_safetensors=True)
                                   
 # Tokenize our input
 inputs = clip_tokenizer(caption, return_tensors="pt")
-print(f"Caption tokens: {inputs}")
+print(f"\nCaption tokens: {inputs}")
 
 # Convert our input back to tokens
 caption_back = clip_tokenizer.convert_ids_to_tokens(inputs["input_ids"][0])
@@ -37,9 +43,10 @@ print(f"Caption converted back: {caption_back}")
 # Create a text embedding
 text_output = model.get_text_features(**inputs)
 text_embedding = text_output.pooler_output
-print(f"text_embedding.shape: {text_embedding.shape}")
+print(f"\ntext_embedding.shape: {text_embedding.shape}")
 
 # Preprocess image
+console.print(f"\nProcessing image", style="gold1")
 processed_image = clip_processor(text=None, images=image, return_tensors="pt")["pixel_values"]
 print(f"processed_image.shape: {processed_image.shape}")
 
@@ -48,6 +55,9 @@ img = processed_image.squeeze(0)
 img = img.permute(*torch.arange(img.ndim - 1, -1, -1))
 img = np.einsum("ijk->jik", img)
 
-# Visualize preprocessed image
+# Visualize preprocessed image using matplotlib
 plt.imshow(img)
 plt.axis("off")
+
+# Fin
+print()
