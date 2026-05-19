@@ -20,6 +20,7 @@ export CMAKE_ARGS="-DGGML_CUDA=on" \
 export FORCE_CMAKE=1 \
 pip install --upgrade --force-reinstall --no-cache-dir llama-cpp-python \
 
+**Librerías adicionales** \
 pip install mteb \
 conda install rich -c conda-forge \
 conda install nltk -c conda-forge \
@@ -80,11 +81,14 @@ LlamaCpp:
 
 \
 **Importante:** \
-La instalación de Transformers la hago con PIP ya que la versión que instala conda es muy antigua (Transformers v4) y no puede acceder a los modelos del libro (Transformers v5)
+La instalación de la librería Transformers de Hugging Face la hago con PIP ya que la versión que instala conda es muy antigua (Transformers v4) y no puede acceder a los modelos del libro, que requieren Transformers v5.
 
 Con la instalación de bitsandbytes ocurre lo mismo, la hago con PIP ya que la versión que instala conda es antigua. Además la instalo con el parámetro --upgrade para que pip use la versión más moderna que es la que funciona bien con los drivers CUDA v13.0 que son los actuales en 2026. 
 
 No hacer `$ conda update --all -c conda-forge -y` porque instala una versión de PyTorch sin CUDA
 
 Para comprobar las versiones de librerías y que está funcionando CUDA en PyTorch ejecutar `version.py` \
-Para monitorizar el uso de la GPU usar `./monitor.sh` en una ventana de Terminal
+Para monitorizar el uso de la GPU usar en una ventana de Terminal:
+- `nvitop`
+-  `./monitor.sh`
+ 
