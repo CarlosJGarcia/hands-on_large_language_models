@@ -24,26 +24,35 @@ print(f"Caption: {caption}")
 console.print(f"\nCargando tokenizer", style="gold1")
 clip_tokenizer = CLIPTokenizerFast.from_pretrained(MODEL_ID)
 
-# Load a processor to preprocess the images
+# Load a processor to preprocess the image
 console.print(f"\nCargando image processor", style="gold1")
 clip_processor = CLIPProcessor.from_pretrained(MODEL_ID)
 
-# Main model for generating text and image embeddings
+# Main model for generating text embeddings and image embeddings
 console.print(f"\nCargando el modelo (en CPU)", style="gold1")
 model = CLIPModel.from_pretrained(MODEL_ID, use_safetensors=True)
-                                  
-# Tokenize our input
+
+
+# TEXT
+# ====
+
+# Tokenize the text
+console.print(f"\nProcessing text", style="gold1")
 inputs = clip_tokenizer(caption, return_tensors="pt")
 print(f"\nCaption tokens: {inputs}")
 
-# Convert our input back to tokens
+# Convert the tokens back to text
 caption_back = clip_tokenizer.convert_ids_to_tokens(inputs["input_ids"][0])
 print(f"Caption converted back: {caption_back}")
 
 # Create a text embedding
 text_output = model.get_text_features(**inputs)
 text_embedding = text_output.pooler_output
-print(f"\ntext_embedding.shape: {text_embedding.shape}")
+print(f"text_embedding.shape: {text_embedding.shape}")
+
+
+# IMAGE
+# =====
 
 # Preprocess image
 console.print(f"\nProcessing image", style="gold1")
@@ -55,9 +64,19 @@ img = processed_image.squeeze(0)
 img = img.permute(*torch.arange(img.ndim - 1, -1, -1))
 img = np.einsum("ijk->jik", img)
 
-# Visualize preprocessed image using matplotlib
+# Clip the values between 0 and 1 to prevent a matplotlib warning
+img = np.clip(img, 0, 1)
+
+# Visualize the preprocessed image using matplotlib
 plt.imshow(img)
 plt.axis("off")
+plt.show()
+
+# Create the image embedding
+image_output = model.get_image_features(pixel_values=processed_image)
+image_embedding = image_output.pooler_output 
+print(f"image_embedding.shape: {image_embedding.shape}")
+
 
 # Fin
 print()
