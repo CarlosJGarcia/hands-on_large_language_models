@@ -5,15 +5,25 @@ import transformers
 from rich.console import Console
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, GenerationConfig
 
+# Mute Hugging Face warnings so they do not pollute the console
+transformers.logging.set_verbosity_error()
+
 # Modelo:Microsoft Phi-3-mini 3.8B (billion) parameters, 8 GB VRAM. Text-only, no multimodal. Requires prompt template.
-MODEL_ID = "microsoft/Phi-3-mini-4k-instruct"
+# MODEL_ID = "microsoft/Phi-3-mini-4k-instruct"
+
+# Modelo:Microsoft Phi-4-mini 3.8B (billion) parameters. Mismo tamaño, text-only y require template pero mejor en lógica, programación y matemáticas
+MODEL_ID = "microsoft/Phi-4-mini-instruct"
+
+CONTEXT_WINDOW_SIZE = 8192
 
 console = Console()
 console.print(f"\nTransformers", style="gold1")
 print(f"transformers:     {transformers.__version__}")
 
-
 # Load model Phi-3-mini and tokenizer in the NVIDIA GPU
+# 
+
+
 # IMP: La versión actual de la librería "transformers" ya no soporta el parámetro "trust_remote_code=True" que viene en el libro
 console.print(f"\nCargando el modelo (en CPU)", style="gold1")
 print(f"Loading model {MODEL_ID} in the GPU")
@@ -26,7 +36,7 @@ tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 generator = pipeline("text-generation", model=model, tokenizer=tokenizer, return_full_text=False)
 
 # Define the generation configuration
-gen_config = GenerationConfig(max_new_tokens=500, do_sample=False, num_return_sequences=1,
+gen_config = GenerationConfig(max_new_tokens=CONTEXT_WINDOW_SIZE, do_sample=False, num_return_sequences=1,
     pad_token_id=tokenizer.pad_token_id if tokenizer.pad_token_id else tokenizer.eos_token_id
 )
 
