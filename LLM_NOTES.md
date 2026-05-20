@@ -19,9 +19,11 @@
 
 An LLM is essentially a massive Transformer neural network.
 
-- Frontier model: Los modelos 'tope de gama' que se ejecutan en un datacenter y a los que se accede mediante un API a través de Internet (Gemini, Claude, ChatGPT)
 
-- Edge model: Los modelos compactos pensados para ejecutarse localmente en un smartphone o en un ordenador, incluso con hardware dedicado (RTX 3060 12 GB, RTX 5060 16 GB, etc.)
+|---------|------------------|----------------|-------|
+| Frontier model | 100B to Trillions | Ejemplo | Los modelos 'tope de gama' que se ejecutan en un datacenter y a los que se accede mediante un API a través de Internet (Gemini, Claude, ChatGPT) |
+| Workstation model | 8B to 70B | Ejemplo | Run on desktop computers with dedicated harware or high memory machines like Mac Studio or DGX Sparc |
+| Edge model | <1B to 8B | Ejemplo | Los modelos compactos pensados para ejecutarse localmente en un smartphone o en un ordenador, incluso con hardware dedicado (RTX 3060 12 GB, RTX 5060 16 GB, etc.) |
 
 | | Representational Models | Embedding Models | Generative Models |
 |---------|------------------|----------------|-------|
