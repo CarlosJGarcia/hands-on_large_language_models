@@ -20,22 +20,18 @@ console = Console()
 console.print(f"\nTransformers", style="gold1")
 print(f"transformers:     {transformers.__version__}")
 
-# Load model Phi-3-mini and tokenizer in the NVIDIA GPU
-# 
-
+# Load model and tokenizer in the GPU
 
 # IMP: La versión actual de la librería "transformers" ya no soporta el parámetro "trust_remote_code=True" que viene en el libro
-console.print(f"\nCargando el modelo (en CPU)", style="gold1")
+console.print(f"\nCargando el modelo", style="gold1")
 print(f"Loading model {MODEL_ID} in the GPU")
 model = AutoModelForCausalLM.from_pretrained(MODEL_ID, device_map="cuda", torch_dtype="auto")
 
 console.print(f"\nCargando tokenizer", style="gold1")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 
-# Create a pipeline (generator)
+# Create a pipeline (generator) and define the generation configuration, including context window size
 generator = pipeline("text-generation", model=model, tokenizer=tokenizer, return_full_text=False)
-
-# Define the generation configuration
 gen_config = GenerationConfig(max_new_tokens=CONTEXT_WINDOW_SIZE, do_sample=False, num_return_sequences=1,
     pad_token_id=tokenizer.pad_token_id if tokenizer.pad_token_id else tokenizer.eos_token_id
 )
