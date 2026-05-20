@@ -20,6 +20,7 @@
 An LLM is essentially a massive Transformer neural network.
 
 
+| | | | |
 |---------|------------------|----------------|-------|
 | Frontier model | 100B to Trillions | Ejemplo | Los modelos 'tope de gama' que se ejecutan en un datacenter y a los que se accede mediante un API a través de Internet (Gemini, Claude, ChatGPT) |
 | Workstation model | 8B to 70B | Ejemplo | Run on desktop computers with dedicated harware or high memory machines like Mac Studio or DGX Sparc |
