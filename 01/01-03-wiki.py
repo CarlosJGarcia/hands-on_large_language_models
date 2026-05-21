@@ -25,5 +25,6 @@ for key, value in sample.items():
     content_preview = str(value)[:200].replace('\n', ' ')
     print(f"{key}: {content_preview}...")
 
+# Pause 0
 print()
 key = input("Press ENTER to exit.")

@@ -43,6 +43,7 @@ print(f"transformers: {transformers.__version__}")
 # Load model OpenAI GPT-2 and tokenizer in the NVIDIA GPU
 #MODEL_ID = "openai-community/gpt2-medium"
 MODEL_ID = "openai-community/gpt2-xl"
+
 model = AutoModelForCausalLM.from_pretrained(MODEL_ID, device_map="cuda", torch_dtype="auto")
 print(f"\nModel {MODEL_ID} successfully loaded.")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
@@ -89,7 +90,7 @@ output = generator(prompt, generation_config=gen_config)
 #output_cleaned = re.sub(r'\n\s*\n', '\n', output_cleaned)
 output_cleaned = text_cleanup(output[0]['generated_text'])
 
-print(f"Prompt: {prompt}")
+print(f"\nPrompt: {prompt}")
 print(f"Generated text: {output_cleaned}")
 print()
 

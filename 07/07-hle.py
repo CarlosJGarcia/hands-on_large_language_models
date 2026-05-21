@@ -18,7 +18,11 @@ DATASET_ID = "cais/hle"
 SPLIT = "test"              # El único 'split'. Contiene 2.500 preguntas, algunas con imágenes. Indica que este es un dataset de test, no de training ni de validación
 
 # Modelo: Microsoft Phi-3-mini, version fp16 (full precision) 3.8B (billion) parameters, 8 GB VRAM. Text-only, no multimodal. Requires prompt template.
-MODEL_PATH = "../models/Phi-3-mini-4k-instruct-fp16.gguf"
+#MODEL_PATH = "../models/Phi-3-mini-4k-instruct-fp16.gguf"
+
+# Modelo: Microsoft Phi-3-mini, version fp16 (full precision) 3.8B (billion) parameters, 8 GB VRAM. Text-only, no multimodal. Requires prompt template.
+MODEL_PATH = "../models/Phi-4-mini-4k-instruct-bf16.gguf"
+
 
 # Context window. Contiene la pregunta y la respuesta generada. Si se supera el tamaño asignado, la inferencia falla y el programa se interrumpe
 # El valor por defecto de Phi-3-mini es 4096. Si asignamos más, da un warning, pero evita que el programa se interrumpa en las preguntas que superan los 4096 tokens
@@ -29,8 +33,9 @@ MODEL_PATH = "../models/Phi-3-mini-4k-instruct-fp16.gguf"
 # En precisión FP16 (2 Bytes cada valor), 8.192 tokens ocupan 768 MB
 # En precisión FP16 (2 Bytes cada valor), 12.288 tokens ocupan 1.152 MB
 
-# CONTEXT_WINDOW_SIZE = 12032     # Limite de memoria de contexto para cargar el Phi-3-mini en la RTX 3060 12 GB
-CONTEXT_WINDOW_SIZE = 12288       # Requiere 16GB VRAM
+# CONTEXT_WINDOW_SIZE = 12032     # Limite de memoria de contexto (KV Cache) para cargar el Phi-3-mini en la RTX 3060 12 GB
+CONTEXT_WINDOW_SIZE = 12288       # Requiere 16GB VRAM para Modelo + KV Cache
+#CONTEXT_WINDOW_SIZE = 131072     # Requiere 24GB VRAM para Modelo + KV Cache. El el tamaño por defecto del KV Cache de Phi-4 en FP16
 
 # Uso de VRAM RTX 3060
 # Capacidad          12000 MB 100%
