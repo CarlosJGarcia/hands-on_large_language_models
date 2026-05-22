@@ -57,10 +57,15 @@ dataset = load_dataset(DATASET_ID, split=SPLIT)
 
 print(f"\n- Dataset structure: {dataset}")
 print(f"\n- Dataset features : {dataset.features}")
-print(f"\n- Number of rows: {len(dataset)}")
+print(f"\n- Number of rows dataset: {len(dataset)}")
 
 # Creo mi propia copia del dataset, filtrando el dataset para quedarme solo con las filas que no tienen imágenes
 dataset_text = dataset.filter(lambda row: row["image"] == "" or row["image"] is None)
+print(f"\n- Number of rows dataset_text: {len(dataset_text)}")
+
+# Fin
+print()
+sys.exit(0)
 
 
 console.print(f"\nLeyendo la primera fila (0)", style="gold1")
@@ -89,9 +94,7 @@ for n in range(0, LIMIT):
     print(n, row["id"])
 
 
-# Fin
-print()
-sys.exit(0)
+
 
 # Cargando el modelo en la GPU a partir del fichero GGUF
 console.print(f"\nLangChain & Llama-cpp-python", style="gold1")
