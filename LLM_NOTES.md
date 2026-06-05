@@ -28,6 +28,8 @@ An LLM is essentially a massive Transformer neural network.
 
 - Meta Llama 3 8B Unquantized + Context  - 24 GB RAM
 - Meta Llama 3 70B Unquantized + Context - 160 GB RAM 
+- Gemma 4 E4B: Edge model. 4 Billion parameters
+- Gemma 4 12B: Workstation model. 12 Billion parameters. But requires quantization to work in 16 GB VRAM or RAM. \
 
 
 - Para ejecutar los modelos workstation y tener buen rendimiento en inferencia se usa el Mac Studio con 192 GB de unified memory y ancho de banda de memoria 800GB/s
