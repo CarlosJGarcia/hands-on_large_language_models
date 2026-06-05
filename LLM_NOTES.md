@@ -2,9 +2,9 @@
 
 | GPU Category | Model | Key Advantage for AI |
 | :--- | :--- | :--- |
-| **Enthusiast / Prosumer** | **RTX 3090 24GB** | Gold standard for local development in 2022-2023.|
-| **Enthusiast / Prosumer** | **RTX 4090 24GB** | Gold standard for local development in 2023-2025. Large LLM fine-tuning and prototyping before moving to enterprise hardware. |
 | **New Professional Standard** | **RTX 5090 32GB** | Current top-tier consumer and data scientist choice in 2026, offering more VRAM and significant performance gains. |
+| **Enthusiast / Prosumer** | **RTX 4090 24GB** | Gold standard for local development in 2023-2025. Large LLM fine-tuning and prototyping before moving to enterprise hardware. |
+| **Enthusiast / Prosumer** | **RTX 3090 24GB** | Gold standard for local development in 2022-2023.|
 | **Budget / Student** | **RTX 3060 12GB / 5060 Ti 16GB** | Remain popular in 2026 due to their VRAM-to-price ratio, allowing students and hobbyists to run LLM inference and small-scale training projects locally without a massive investment. These two together are the equivalent of a RTX 4090 with 24 GB.|
 
 | GPU Category | Architecture |
@@ -15,12 +15,12 @@
 
 
 
-**Tipos de modelos** \
+**Tipos de modelos**
 
 An LLM is essentially a massive Transformer neural network.
 
 
-| | | | |
+| Type | Parameters | Example | |
 |---------|------------------|----------------|-------|
 | **Frontier model** | 100B to Trillions | Google Gemini | Los modelos 'tope de gama' que se ejecutan en un datacenter y a los que se accede mediante un API a través de Internet (Gemini, Claude, ChatGPT) |
 | **Workstation model** | 8B to 70B | Meta's Llama 3 | Run on desktop computers with dedicated harware or high memory machines like Mac Studio or DGX Sparc |
@@ -29,7 +29,7 @@ An LLM is essentially a massive Transformer neural network.
 - Meta Llama 3 8B Unquantized + Context  - 24 GB RAM
 - Meta Llama 3 70B Unquantized + Context - 160 GB RAM 
 - Gemma 4 E4B: Edge model. 4 Billion parameters
-- Gemma 4 12B: Workstation model. 12 Billion parameters. But requires quantization to work in 16 GB VRAM or RAM. \
+- Gemma 4 12B: Workstation model. 12 Billion parameters. But requires quantization to work in 16 GB VRAM or RAM.
 
 
 - Para ejecutar los modelos workstation y tener buen rendimiento en inferencia se usa el Mac Studio con 192 GB de unified memory y ancho de banda de memoria 800GB/s
