@@ -1,4 +1,4 @@
-**GPUs** \
+**GPUs**
 
 | GPU Category | Model | Key Advantage for AI |
 | :--- | :--- | :--- |
